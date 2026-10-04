@@ -96,23 +96,23 @@ export function LocationPicker({
       longitude: selectedLoc.longitude,
       title: 'Delivery / Stop Location',
       label: '📍 HERE',
-      color: 'brand',
+      color: 'blue',
     },
   ];
 
-  return (
-    <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+  const content = (
+    <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm w-full">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div className="flex items-center space-x-2">
-          <MapPin className="h-5 w-5 text-brand-600" />
-          <h3 className="font-semibold text-slate-900">{title}</h3>
+          <MapPin className="h-5 w-5 text-[#2874f0]" />
+          <h3 className="font-bold text-[#212121]">{title}</h3>
         </div>
         <div className="flex items-center space-x-2">
           <button
             type="button"
             onClick={handleUseCurrentLocation}
             disabled={isLocating}
-            className="inline-flex items-center space-x-1.5 rounded-lg border border-brand-200 bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700 hover:bg-brand-100 transition-colors disabled:opacity-50"
+            className="inline-flex items-center space-x-1.5 rounded-sm border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-[#2874f0] hover:bg-blue-100 transition-colors disabled:opacity-50"
           >
             {isLocating ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -183,11 +183,28 @@ export function LocationPicker({
       <button
         type="button"
         onClick={() => onConfirm({ ...selectedLoc, landmark })}
-        className="w-full flex items-center justify-center space-x-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-brand-700 transition-colors"
+        className="w-full flex items-center justify-center space-x-2 rounded-sm bg-[#fb641b] px-4 py-3 text-sm font-bold uppercase tracking-wider text-white shadow hover:bg-[#e85a15] transition-colors"
       >
         <Check className="h-4 w-4" />
         <span>{confirmButtonText}</span>
       </button>
     </div>
   );
+
+  if (onClose) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 overflow-y-auto animate-in fade-in"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
+        <div className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl my-auto max-h-[92vh] overflow-y-auto">
+          {content}
+        </div>
+      </div>
+    );
+  }
+
+  return content;
 }

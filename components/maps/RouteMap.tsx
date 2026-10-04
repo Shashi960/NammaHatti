@@ -23,7 +23,7 @@ export function RouteMap({ origin, destination, pickupStops = [], height = '360p
       longitude: origin.longitude,
       title: `Origin: ${origin.formattedAddress}`,
       label: '🏁 A (Start)',
-      color: 'brand',
+      color: 'blue',
     },
     {
       id: 'route_destination',
@@ -44,7 +44,7 @@ export function RouteMap({ origin, destination, pickupStops = [], height = '360p
         longitude: stop.location.longitude,
         title: `Stop ${index + 1}: ${stop.shopName} (${stop.packageCount} pkgs)`,
         label: `🏪 #${index + 1}`,
-        color: stop.isPickedUp ? 'brand' : 'route',
+        color: stop.isPickedUp ? 'green' : 'route',
       });
     }
   });
@@ -62,7 +62,7 @@ export function RouteMap({ origin, destination, pickupStops = [], height = '360p
         center={{ lat: centerLat, lng: centerLng }}
         zoom={12}
         markers={markers}
-        polyline={{ points: polylinePoints, color: '#1e6f5e' }}
+        polyline={{ points: polylinePoints, color: '#2874f0' }}
         height={height}
       />
     </div>

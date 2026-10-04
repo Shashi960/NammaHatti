@@ -21,7 +21,7 @@ export function DeliveryMap({ shopLocation, deliveryLocation, height = '320px' }
       longitude: shopLocation.longitude,
       title: `Pickup: ${shopLocation.formattedAddress}`,
       label: '🏪 SHOP',
-      color: 'brand',
+      color: 'green',
     },
     {
       id: 'drop_location',
@@ -29,7 +29,7 @@ export function DeliveryMap({ shopLocation, deliveryLocation, height = '320px' }
       longitude: deliveryLocation.longitude,
       title: `Delivery: ${deliveryLocation.formattedAddress}`,
       label: '🏠 YOU',
-      color: 'red',
+      color: 'blue',
     },
   ];
 
@@ -44,7 +44,7 @@ export function DeliveryMap({ shopLocation, deliveryLocation, height = '320px' }
         center={{ lat: centerLat, lng: centerLng }}
         zoom={13}
         markers={markers}
-        polyline={{ points: polylinePoints, color: '#0ea5e9' }}
+        polyline={{ points: polylinePoints, color: '#2874f0' }}
         height={height}
       />
     </div>

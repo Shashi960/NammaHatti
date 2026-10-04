@@ -176,24 +176,24 @@ export default function ShopsDiscoveryPage() {
                     <p className="text-xs text-slate-600">{shop.address}</p>
 
                     <div className="flex items-center space-x-3 text-xs text-slate-500">
-                      <span className="flex items-center space-x-1 text-amber-600 font-semibold">
-                        <Star className="h-3.5 w-3.5 fill-current" />
+                      <span className="inline-flex items-center space-x-0.5 bg-[#388e3c] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
                         <span>{shop.rating.toFixed(1)}</span>
-                        <span className="text-slate-400 font-normal">({shop.reviewCount || 0} reviews)</span>
+                        <Star className="h-2.5 w-2.5 fill-white" />
                       </span>
+                      <span className="text-slate-400 font-normal">({shop.reviewCount || 0} ratings)</span>
                       <span>·</span>
                       <span>Hours: {shop.openingTime} - {shop.closingTime}</span>
                       <span>·</span>
-                      <span className="font-medium text-slate-700">{shop.productCount || 0} Products in Stock</span>
+                      <span className="font-semibold text-slate-700">{shop.productCount || 0} Products</span>
                     </div>
                   </div>
 
                   <div className="flex sm:flex-col items-center justify-between sm:justify-center gap-2 border-t sm:border-t-0 sm:border-l border-slate-100 pt-3 sm:pt-0 sm:pl-4">
                     <Link
                       href={`/shops/${shop._id}`}
-                      className="rounded-lg bg-brand-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-brand-700 transition-colors whitespace-nowrap text-center w-full"
+                      className="rounded-sm bg-[#2874f0] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition-colors whitespace-nowrap text-center w-full"
                     >
-                      View Shop & Menu
+                      View Shop & Products
                     </Link>
                   </div>
                 </div>
