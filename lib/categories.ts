@@ -1,0 +1,18 @@
+export const INITIAL_CATEGORIES = [
+  { slug: 'grocery', name: 'Grocery & Essentials', iconName: 'ShoppingBag', description: 'Fresh staples, provisions and groceries' },
+  { slug: 'bakery', name: 'Bakery & Snacks', iconName: 'Cake', description: 'Fresh bakes, confectioneries and tea-time snacks' },
+  { slug: 'electrical', name: 'Electrical Supplies', iconName: 'Zap', description: 'Cables, switches, lighting and circuit components' },
+  { slug: 'plumbing', name: 'Plumbing & Pipes', iconName: 'Wrench', description: 'Faucets, PVC pipes, valves and plumbing tools' },
+  { slug: 'hardware', name: 'Hardware & Tools', iconName: 'Hammer', description: 'Hand tools, power tools, fasteners and adhesives' },
+  { slug: 'automobile', name: 'Automobile & Spares', iconName: 'Car', description: 'Two-wheeler and four-wheeler accessories & parts' },
+  { slug: 'clothing', name: 'Clothing & Textiles', iconName: 'Shirt', description: 'Apparel, uniforms and traditional fabrics' },
+  { slug: 'electronics', name: 'Mobile & Electronics', iconName: 'Smartphone', description: 'Gadgets, chargers, batteries and accessories' },
+  { slug: 'stationery', name: 'Stationery & Books', iconName: 'BookOpen', description: 'School, college and office stationery' },
+  { slug: 'household', name: 'Household Goods', iconName: 'Home', description: 'Kitchenware, cleaning materials and home essentials' },
+  { slug: 'agriculture', name: 'Agriculture & Farm', iconName: 'Sprout', description: 'Seeds, fertilizers, irrigation fittings and farm tools' },
+  { slug: 'appliances', name: 'Home Appliances', iconName: 'Tv', description: 'Small appliances, fans, coolers and spare parts' },
+  { slug: 'beauty', name: 'Beauty & Personal Care', iconName: 'Sparkles', description: 'Toiletries, herbal products and cosmetics' },
+  { slug: 'footwear', name: 'Footwear', iconName: 'Footprints', description: 'Casual shoes, sandals, slippers and boots' },
+  { slug: 'sports', name: 'Sports & Fitness', iconName: 'Trophy', description: 'Balls, bats, sportswear and fitness equipment' },
+  { slug: 'other', name: 'General & Others', iconName: 'Package', description: 'Specialty items and assorted local goods' },
+];
