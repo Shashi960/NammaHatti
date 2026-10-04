@@ -3,7 +3,27 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
   body {
-    @apply bg-slate-50 text-slate-900 antialiased min-h-screen flex flex-col;
+    @apply bg-[#f1f2f4] text-[#212121] antialiased min-h-screen flex flex-col font-sans selection:bg-[#2874f0] selection:text-white;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
   }
 }

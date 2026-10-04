@@ -1,0 +1,25 @@
+{
+  "name": "LocalMesh — Local Commerce & Route Delivery",
+  "short_name": "LocalMesh",
+  "description": "Discover local shops and get orders delivered via daily commuter route pooling.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#2874f0",
+  "theme_color": "#2874f0",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "travel", "productivity"]
+}

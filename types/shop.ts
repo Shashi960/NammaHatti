@@ -21,6 +21,8 @@ export interface Shop {
   location: Location;
   rating: number;
   reviewCount: number;
+  distanceKm?: number;
+  productCount?: number;
   createdAt: Date;
   updatedAt: Date;
 }

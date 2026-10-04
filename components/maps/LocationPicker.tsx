@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MapPin, Navigation, Check, Loader2 } from 'lucide-react';
+import { MapPin, Navigation, Check, Loader2, X } from 'lucide-react';
 import { Location, createLocation } from '@/types/location';
 import { GoogleMap, MapMarker } from './GoogleMap';
 import { PlaceAutocomplete } from './PlaceAutocomplete';
@@ -12,6 +12,7 @@ interface LocationPickerProps {
   onConfirm: (location: Location) => void;
   title?: string;
   confirmButtonText?: string;
+  onClose?: () => void;
 }
 
 export function LocationPicker({
@@ -19,6 +20,7 @@ export function LocationPicker({
   onConfirm,
   title = 'Select Location',
   confirmButtonText = 'Confirm This Location',
+  onClose,
 }: LocationPickerProps) {
   const { detectCurrentLocation, isLocating } = useLocation();
 
@@ -105,19 +107,30 @@ export function LocationPicker({
           <MapPin className="h-5 w-5 text-brand-600" />
           <h3 className="font-semibold text-slate-900">{title}</h3>
         </div>
-        <button
-          type="button"
-          onClick={handleUseCurrentLocation}
-          disabled={isLocating}
-          className="inline-flex items-center space-x-1.5 rounded-lg border border-brand-200 bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700 hover:bg-brand-100 transition-colors disabled:opacity-50"
-        >
-          {isLocating ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          ) : (
-            <Navigation className="h-3.5 w-3.5" />
+        <div className="flex items-center space-x-2">
+          <button
+            type="button"
+            onClick={handleUseCurrentLocation}
+            disabled={isLocating}
+            className="inline-flex items-center space-x-1.5 rounded-lg border border-brand-200 bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700 hover:bg-brand-100 transition-colors disabled:opacity-50"
+          >
+            {isLocating ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Navigation className="h-3.5 w-3.5" />
+            )}
+            <span>{isLocating ? 'Locating...' : 'Use Current GPS'}</span>
+          </button>
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+            >
+              <X className="h-4 w-4" />
+            </button>
           )}
-          <span>{isLocating ? 'Locating...' : 'Use Current GPS'}</span>
-        </button>
+        </div>
       </div>
 
       {/* Autocomplete Search */}

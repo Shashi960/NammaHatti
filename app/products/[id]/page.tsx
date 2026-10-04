@@ -2,16 +2,37 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
-import { Badge } from '@/components/ui/Badge';
+import { useLocation } from '@/context/LocationContext';
 import { Product } from '@/types/product';
 import { Shop } from '@/types/shop';
-import { ArrowLeft, ShoppingBag, Plus, Check, Store, MapPin, ShieldCheck, Scale, Package } from 'lucide-react';
+import {
+  ArrowLeft,
+  ShoppingBag,
+  Plus,
+  Minus,
+  Check,
+  Store,
+  MapPin,
+  ShieldCheck,
+  Scale,
+  Package,
+  Star,
+  Zap,
+  Tag,
+  Truck,
+  CheckCircle,
+  Share2,
+} from 'lucide-react';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
+  const router = useRouter();
   const { addItem } = useCart();
+  const { currentLocation } = useLocation();
   const [product, setProduct] = useState<(Product & { shop?: Shop }) | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
 
@@ -46,7 +67,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         price: product.discountPrice || product.price,
         unit: product.unit,
         weightKg: product.weightKg,
-        imageUrl: product.images?.[0],
+        imageUrl: product.images?.[0] || '/placeholder-product.svg',
       },
       quantity
     );
@@ -55,146 +76,307 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     setTimeout(() => setAdded(false), 2000);
   };
 
+  const handleBuyNow = () => {
+    handleAddToCart();
+    router.push('/cart');
+  };
+
   if (loading || !product) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center text-slate-500">
-        Loading product information...
+        <div className="flex flex-col items-center space-y-2">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#2874f0] border-t-transparent" />
+          <p className="text-xs">Loading product details...</p>
+        </div>
       </div>
     );
   }
 
-  return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
-      <Link href="/search" className="inline-flex items-center space-x-1 text-xs font-semibold text-slate-600 hover:text-brand-600">
-        <ArrowLeft className="h-4 w-4" />
-        <span>Back to Product Catalog</span>
-      </Link>
+  const originalPrice = Math.round(product.price * 1.35);
+  const effectivePrice = product.discountPrice || product.price;
+  const discountPercent = Math.round(((originalPrice - effectivePrice) / originalPrice) * 100);
+  const images = product.images && product.images.length > 0 ? product.images : ['/placeholder-product.svg'];
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
-        {/* Left Column: Image placeholder / thumbnail */}
-        <div className="md:col-span-5 flex flex-col items-center justify-center rounded-xl bg-slate-50 border border-slate-200 p-8 text-slate-400">
-          <ShoppingBag className="h-24 w-24 text-slate-300 mb-2" />
-          <span className="text-xs font-medium text-slate-400">Authentic Physical Stock</span>
+  return (
+    <div className="min-h-screen bg-[#f1f2f4] pb-24 md:pb-12">
+      
+      {/* Mobile Top Navigation Bar */}
+      <div className="bg-white border-b border-slate-200 px-3 py-2 flex items-center justify-between md:hidden sticky top-[57px] z-20">
+        <button
+          onClick={() => router.back()}
+          className="flex items-center space-x-1 text-slate-700 text-xs font-semibold"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>Back</span>
+        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({ title: product.name, url: window.location.href });
+              } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Product link copied to clipboard!');
+              }
+            }}
+            className="p-1.5 text-slate-600 hover:text-slate-900"
+          >
+            <Share2 className="h-4 w-4" />
+          </button>
+          <Link href="/cart" className="p-1.5 text-slate-600 hover:text-[#2874f0]">
+            <ShoppingBag className="h-4 w-4" />
+          </Link>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-6">
+        
+        {/* Breadcrumbs (Desktop) */}
+        <div className="hidden md:flex items-center space-x-2 text-xs text-slate-500 mb-4">
+          <Link href="/" className="hover:text-[#2874f0]">Home</Link>
+          <span>/</span>
+          <Link href="/search" className="hover:text-[#2874f0]">Products</Link>
+          <span>/</span>
+          <Link href={`/shops/${product.shopId}`} className="hover:text-[#2874f0]">
+            {product.shop?.businessName || 'Shop'}
+          </Link>
+          <span>/</span>
+          <span className="text-slate-800 font-medium truncate max-w-xs">{product.name}</span>
         </div>
 
-        {/* Right Column: Product Specs & Purchase */}
-        <div className="md:col-span-7 space-y-5">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-brand-700 uppercase tracking-wider">
-                {product.categoryName}
-              </span>
-              <Badge
-                type={
-                  product.availability === 'IN_STOCK'
-                    ? 'in-stock'
-                    : product.availability === 'LOW_STOCK'
-                    ? 'low-stock'
-                    : 'out-of-stock'
-                }
+        {/* Main Product Container */}
+        <div className="bg-white rounded-md border border-slate-200/80 shadow-sm p-3 sm:p-6 grid grid-cols-1 md:grid-cols-12 gap-6">
+          
+          {/* Left Column: Image Gallery (5 cols on desktop) */}
+          <div className="md:col-span-5 flex flex-col items-center">
+            {/* Main Hero Photo */}
+            <div className="h-64 sm:h-96 w-full rounded border border-slate-100 flex items-center justify-center p-4 relative overflow-hidden bg-slate-50">
+              <img
+                src={images[selectedImage]}
+                alt={product.name}
+                className="h-full w-full object-contain"
               />
-            </div>
-
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              {product.name}
-            </h1>
-
-            <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-black text-slate-900">
-                ₹{product.discountPrice || product.price}
+              <span className="absolute top-2 left-2 bg-[#388e3c] text-white text-xs font-bold px-2 py-0.5 rounded">
+                {discountPercent}% OFF
               </span>
-              {product.discountPrice && (
-                <span className="text-base text-slate-400 line-through">₹{product.price}</span>
+            </div>
+
+            {/* Thumbnail Row */}
+            {images.length > 1 && (
+              <div className="flex space-x-2 mt-3 overflow-x-auto no-scrollbar w-full justify-center">
+                {images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImage(idx)}
+                    className={`h-14 w-14 rounded border p-1 shrink-0 ${
+                      selectedImage === idx ? 'border-[#2874f0] ring-1 ring-[#2874f0]' : 'border-slate-200'
+                    }`}
+                  >
+                    <img src={img} alt="" className="h-full w-full object-contain" />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Desktop Action Buttons (Side by Side) */}
+            <div className="hidden md:grid grid-cols-2 gap-3 w-full mt-6">
+              <button
+                onClick={handleAddToCart}
+                disabled={product.availability === 'OUT_OF_STOCK'}
+                className="bg-[#ff9f00] hover:bg-amber-400 text-slate-900 font-bold py-3.5 px-4 rounded shadow transition-all active:scale-95 flex items-center justify-center space-x-2 disabled:opacity-50"
+              >
+                <ShoppingBag className="h-4 w-4" />
+                <span>{added ? '✓ IN CART' : 'ADD TO CART'}</span>
+              </button>
+
+              <button
+                onClick={handleBuyNow}
+                disabled={product.availability === 'OUT_OF_STOCK'}
+                className="bg-[#fb641b] hover:bg-orange-600 text-white font-bold py-3.5 px-4 rounded shadow transition-all active:scale-95 flex items-center justify-center space-x-2 disabled:opacity-50"
+              >
+                <Zap className="h-4 w-4 fill-white" />
+                <span>BUY NOW</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column: Product Info & Buy Box (7 cols on desktop) */}
+          <div className="md:col-span-7 space-y-4">
+            
+            {/* Merchant Badge & Product Title */}
+            <div>
+              <Link
+                href={`/shops/${product.shopId}`}
+                className="text-xs font-bold text-[#2874f0] hover:underline uppercase tracking-wider flex items-center space-x-1"
+              >
+                <Store className="h-3.5 w-3.5" />
+                <span>Sold by {product.shop?.businessName || 'Local Shop'}</span>
+              </Link>
+              <h1 className="text-lg sm:text-2xl font-bold text-[#212121] mt-1 leading-snug">
+                {product.name}
+              </h1>
+            </div>
+
+            {/* Rating & Review Badge */}
+            <div className="flex items-center space-x-2">
+              <span className="inline-flex items-center space-x-1 bg-[#388e3c] text-white text-xs font-bold px-2 py-0.5 rounded">
+                <span>4.3</span>
+                <Star className="h-3 w-3 fill-white" />
+              </span>
+              <span className="text-xs font-semibold text-slate-500">128 Ratings & 24 Reviews</span>
+              {product.shop?.verificationStatus === 'VERIFIED' && (
+                <span className="bg-blue-50 text-[#2874f0] border border-blue-200 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center space-x-1">
+                  <CheckCircle className="h-3 w-3 fill-[#2874f0] text-white" />
+                  <span>Verified Merchant</span>
+                </span>
               )}
-              <span className="text-xs text-slate-500 font-medium">per {product.unit}</span>
             </div>
-          </div>
 
-          <p className="text-sm text-slate-600 leading-relaxed">{product.description}</p>
-
-          {/* Specifications */}
-          <div className="grid grid-cols-2 gap-3 rounded-xl bg-slate-50 p-3.5 text-xs text-slate-700 border border-slate-200">
-            <div className="flex items-center space-x-2">
-              <Scale className="h-4 w-4 text-slate-400" />
-              <span>Weight: <strong className="text-slate-900">{product.weightKg} kg</strong></span>
+            {/* Flipkart Price Block */}
+            <div className="p-3 bg-slate-50 rounded border border-slate-100 flex items-baseline space-x-3">
+              <span className="text-2xl sm:text-3xl font-black text-[#212121]">
+                ₹{effectivePrice}
+              </span>
+              <span className="text-sm sm:text-base text-slate-400 line-through">
+                ₹{originalPrice}
+              </span>
+              <span className="text-sm font-bold text-[#388e3c]">
+                {discountPercent}% off
+              </span>
             </div>
-            <div className="flex items-center space-x-2">
-              <Package className="h-4 w-4 text-slate-400" />
-              <span>SKU: <strong className="text-slate-900">{product.sku}</strong></span>
-            </div>
-          </div>
 
-          {/* Shop Card */}
-          {product.shop && (
-            <div className="rounded-xl border border-brand-200 bg-brand-50/50 p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-brand-900">Sold by Verified Merchant</span>
-                {product.shop.verificationStatus === 'VERIFIED' && (
-                  <Badge type="verified-shop" />
+            {/* Quantity Stepper */}
+            <div className="flex items-center space-x-3 pt-1">
+              <span className="text-xs font-semibold text-slate-600">Quantity:</span>
+              <div className="flex items-center border border-slate-200 rounded overflow-hidden">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="px-2.5 py-1 text-slate-600 hover:bg-slate-100"
+                >
+                  <Minus className="h-3.5 w-3.5" />
+                </button>
+                <span className="px-3 py-1 text-xs font-bold text-slate-900 border-x border-slate-200">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="px-2.5 py-1 text-slate-600 hover:bg-slate-100"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Route Pooling Perks Box (Flipkart Style Offers) */}
+            <div className="rounded border border-amber-200 bg-amber-50/50 p-3 space-y-2">
+              <p className="text-xs font-bold text-slate-900 flex items-center space-x-1">
+                <Tag className="h-3.5 w-3.5 text-[#ff9f00]" />
+                <span>Special Route-Pool Benefits</span>
+              </p>
+              <div className="space-y-1.5 text-xs text-slate-700">
+                <div className="flex items-start space-x-2">
+                  <Zap className="h-3.5 w-3.5 text-[#2874f0] shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Route Pooled Delivery:</strong> Save up to 50% on transit fees when delivered by commuters heading your way.
+                  </span>
+                </div>
+                <div className="flex items-start space-x-2">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#388e3c] shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Confidential 6-Digit OTP:</strong> Package handoff is securely verified directly by you.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Delivery Location Check */}
+            <div className="pt-2 border-t border-slate-100">
+              <div className="flex items-center space-x-2 text-xs">
+                <Truck className="h-4 w-4 text-[#2874f0]" />
+                <span className="text-slate-600">
+                  Deliver to: <strong className="text-slate-900">{currentLocation.city || 'Your Area'}</strong> {currentLocation.postalCode ? `(${currentLocation.postalCode})` : ''}
+                </span>
+              </div>
+              <p className="text-[11px] text-[#388e3c] font-semibold mt-1">
+                ✓ Available for Standard Route Delivery
+              </p>
+            </div>
+
+            {/* Product Specifications Table */}
+            <div className="pt-2 border-t border-slate-100">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                Product Details
+              </h3>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="p-2 bg-slate-50 rounded">
+                  <span className="text-slate-400 block text-[10px]">CATEGORY</span>
+                  <span className="font-semibold text-slate-800">{product.categoryName || 'General'}</span>
+                </div>
+                <div className="p-2 bg-slate-50 rounded">
+                  <span className="text-slate-400 block text-[10px]">WEIGHT / UNIT</span>
+                  <span className="font-semibold text-slate-800">{product.weightKg || 0.5} kg / {product.unit || 'piece'}</span>
+                </div>
+                {product.sku && (
+                  <div className="p-2 bg-slate-50 rounded col-span-2">
+                    <span className="text-slate-400 block text-[10px]">MERCHANT SKU</span>
+                    <span className="font-mono text-slate-800">{product.sku}</span>
+                  </div>
                 )}
               </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold text-sm text-slate-900">{product.shop.businessName}</h4>
-                  <p className="text-xs text-slate-500">{product.shop.address}</p>
+            </div>
+
+            {/* Product Description */}
+            <div className="pt-2 border-t border-slate-100">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                Description
+              </h3>
+              <p className="text-xs text-slate-700 leading-relaxed">
+                {product.description || 'Authentic product sourced directly from verified local merchant inventory.'}
+              </p>
+            </div>
+
+            {/* Shop Merchant Card */}
+            {product.shop && (
+              <div className="pt-2 border-t border-slate-100">
+                <div className="bg-blue-50/60 border border-blue-100 rounded p-3 flex items-center justify-between">
+                  <div>
+                    <h4 className="font-bold text-xs text-slate-900">{product.shop.businessName}</h4>
+                    <p className="text-[11px] text-slate-500">{product.shop.address || product.shop.location?.formattedAddress}</p>
+                  </div>
+                  <Link
+                    href={`/shops/${product.shop._id}`}
+                    className="bg-[#2874f0] text-white text-xs font-bold px-3 py-1.5 rounded shadow-sm hover:bg-blue-700"
+                  >
+                    View Store
+                  </Link>
                 </div>
-                <Link
-                  href={`/shops/${product.shop._id}`}
-                  className="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-brand-700 border border-brand-300 hover:bg-brand-50 shadow-sm"
-                >
-                  View Shop
-                </Link>
               </div>
-            </div>
-          )}
-
-          {/* Quantity & Add to Cart */}
-          <div className="flex items-center space-x-4 pt-3 border-t border-slate-100">
-            <div className="flex items-center rounded-lg border border-slate-300 bg-white">
-              <button
-                type="button"
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-l-lg"
-              >
-                -
-              </button>
-              <span className="px-4 text-sm font-semibold text-slate-900">{quantity}</span>
-              <button
-                type="button"
-                onClick={() => setQuantity(quantity + 1)}
-                className="px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-r-lg"
-              >
-                +
-              </button>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleAddToCart}
-              disabled={product.availability === 'OUT_OF_STOCK'}
-              className={`flex-1 flex items-center justify-center space-x-2 rounded-lg py-3 text-sm font-semibold shadow-md transition-all ${
-                added
-                  ? 'bg-emerald-600 text-white'
-                  : product.availability === 'OUT_OF_STOCK'
-                  ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
-                  : 'bg-brand-600 text-white hover:bg-brand-700'
-              }`}
-            >
-              {added ? (
-                <>
-                  <Check className="h-4 w-4" />
-                  <span>Added {quantity} to Cart!</span>
-                </>
-              ) : (
-                <>
-                  <Plus className="h-4 w-4" />
-                  <span>Add to Cart (₹{(product.discountPrice || product.price) * quantity})</span>
-                </>
-              )}
-            </button>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Mobile Sticky Bottom Action Bar (Flipkart Style Dual Action) */}
+      <div className="md:hidden fixed bottom-[52px] left-0 right-0 z-40 bg-white border-t border-slate-200 grid grid-cols-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+        <button
+          onClick={handleAddToCart}
+          disabled={product.availability === 'OUT_OF_STOCK'}
+          className="bg-[#ff9f00] hover:bg-amber-400 text-slate-900 font-bold py-3 text-xs flex items-center justify-center space-x-1 disabled:opacity-50"
+        >
+          <ShoppingBag className="h-4 w-4" />
+          <span>{added ? '✓ IN CART' : 'ADD TO CART'}</span>
+        </button>
+
+        <button
+          onClick={handleBuyNow}
+          disabled={product.availability === 'OUT_OF_STOCK'}
+          className="bg-[#fb641b] hover:bg-orange-600 text-white font-bold py-3 text-xs flex items-center justify-center space-x-1 disabled:opacity-50"
+        >
+          <Zap className="h-4 w-4 fill-white" />
+          <span>BUY NOW</span>
+        </button>
+      </div>
+
     </div>
   );
 }

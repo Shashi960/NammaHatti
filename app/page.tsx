@@ -15,8 +15,16 @@ import {
   CheckCircle,
   Truck,
   Users,
+  ChevronRight,
+  Star,
+  Flame,
+  Tag,
+  Zap,
+  Download,
+  Percent,
 } from 'lucide-react';
 import { useLocation } from '@/context/LocationContext';
+import { useCart } from '@/context/CartContext';
 import { Badge } from '@/components/ui/Badge';
 import { Shop } from '@/types/shop';
 import { Product } from '@/types/product';
@@ -24,10 +32,14 @@ import { ShopMap } from '@/components/maps/ShopMap';
 
 export default function HomePage() {
   const { currentLocation } = useLocation();
+  const { addItem } = useCart();
   const [nearbyShops, setNearbyShops] = useState<Shop[]>([]);
-  const [popularProducts, setPopularProducts] = useState<Product[]>([]);
+  const [deals, setDeals] = useState<Product[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeBanner, setActiveBanner] = useState(0);
+  const [showPwaBanner, setShowPwaBanner] = useState(true);
+  const [addedItem, setAddedItem] = useState<string | null>(null);
 
   const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || 'LocalMesh';
 
@@ -38,421 +50,435 @@ export default function HomePage() {
         // Load Categories
         const catRes = await fetch('/api/categories');
         const catData = await catRes.json();
-        if (catData.categories) setCategories(catData.categories.slice(0, 8));
+        if (catData.categories) setCategories(catData.categories);
 
         // Load Nearby Shops based on location
         const shopRes = await fetch(
           `/api/shops?lat=${currentLocation.latitude}&lng=${currentLocation.longitude}&radius=30`
         );
         const shopData = await shopRes.json();
-        if (shopData.shops) setNearbyShops(shopData.shops.slice(0, 6));
+        if (shopData.shops) setNearbyShops(shopData.shops.slice(0, 8));
 
-        // Load Popular Products
+        // Load Deals & Products
         const prodRes = await fetch(
-          `/api/products?lat=${currentLocation.latitude}&lng=${currentLocation.longitude}&limit=8`
+          `/api/products?lat=${currentLocation.latitude}&lng=${currentLocation.longitude}&limit=12`
         );
         const prodData = await prodRes.json();
-        if (prodData.products) setPopularProducts(prodData.products);
+        if (prodData.products) setDeals(prodData.products);
       } catch (err) {
         console.error('Failed to load home page content:', err);
       } finally {
         setLoading(false);
       }
     }
-
     loadData();
   }, [currentLocation]);
 
+  // Promotional Banner Slides
+  const banners = [
+    {
+      id: 1,
+      tag: 'ROUTE POOL FESTIVAL',
+      title: 'Local Products. 0 Dark Store Markup.',
+      subtitle: 'Delivered by daily commuters travelling along your route.',
+      cta: 'Shop Nearby Deals',
+      link: '/search',
+      bg: 'from-[#1a5dc7] via-[#2874f0] to-[#0e3b82]',
+      accentColor: 'text-amber-300',
+    },
+    {
+      id: 2,
+      tag: 'DAILY COMMUTER EARNINGS',
+      title: 'Earn ₹300 - ₹800 Daily on Your Route',
+      subtitle: 'Pick up 2–4 verified packages along your journey and earn effortlessly.',
+      cta: 'Register as Commuter',
+      link: '/traveller',
+      bg: 'from-[#d94b07] via-[#fb641b] to-[#ff9f00]',
+      accentColor: 'text-white',
+    },
+    {
+      id: 3,
+      tag: '100% VERIFIED NEIGHBOURHOOD SHOPS',
+      title: 'Support Your Real Local Retailers',
+      subtitle: 'Hardware, bakeries, electricals & organics with authentic store receipts.',
+      cta: 'Explore Verified Shops',
+      link: '/shops',
+      bg: 'from-[#19584c] via-[#2874f0] to-[#14489b]',
+      accentColor: 'text-emerald-300',
+    },
+  ];
+
+  // Auto-rotate hero banners
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveBanner((prev) => (prev + 1) % banners.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [banners.length]);
+
+  const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
+    e.preventDefault();
+    addItem(
+      {
+        productId: product._id,
+        shopId: product.shopId,
+        shopName: product.shopName || 'Local Shop',
+        name: product.name,
+        price: product.discountPrice || product.price,
+        unit: product.unit || 'piece',
+        weightKg: product.weightKg || 0.5,
+        imageUrl: product.images?.[0] || '/placeholder-product.svg',
+      },
+      1
+    );
+    setAddedItem(product._id);
+    setTimeout(() => setAddedItem(null), 1500);
+  };
+
   return (
-    <div className="space-y-16 pb-16">
-      {/* HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-brand-50/70 via-white to-white py-16 sm:py-24 border-b border-slate-100">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
-            {/* Left Column: Headlines & CTA */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center space-x-2 rounded-full bg-brand-100/80 px-3.5 py-1 text-xs font-semibold text-brand-900 border border-brand-200">
-                <Sparkles className="h-3.5 w-3.5 text-brand-700" />
-                <span>Existing Travel + Route-Based Order Pooling</span>
-              </div>
-
-              <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl leading-[1.1]">
-                SHOP LOCAL. <br />
-                <span className="text-brand-600">DELIVER SMARTER.</span>
-              </h1>
-
-              <p className="max-w-2xl text-base sm:text-lg text-slate-600 leading-relaxed">
-                Discover authentic local products from verified neighborhood shops and receive them through travellers already commuting on that route.
-              </p>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <Link
-                  href="/shops"
-                  className="rounded-xl bg-brand-600 px-6 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-brand-700 hover:shadow-lg transition-all flex items-center space-x-2"
-                >
-                  <Store className="h-4 w-4" />
-                  <span>EXPLORE SHOPS</span>
-                </Link>
-
-                <Link
-                  href="/register?role=SHOP"
-                  className="rounded-xl border border-slate-300 bg-white px-5 py-3.5 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-400 hover:bg-slate-50 transition-all"
-                >
-                  REGISTER YOUR BUSINESS
-                </Link>
-
-                <Link
-                  href="/traveller"
-                  className="rounded-xl border border-route-300 bg-route-50 px-5 py-3.5 text-sm font-semibold text-route-900 shadow-sm hover:bg-route-100 transition-all flex items-center space-x-1.5"
-                >
-                  <Car className="h-4 w-4 text-route-600" />
-                  <span>TRAVEL & EARN</span>
-                </Link>
-              </div>
-
-              {/* Trust Badges */}
-              <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-slate-500">
-                <div className="flex items-center space-x-1.5">
-                  <CheckCircle className="h-4 w-4 text-brand-600" />
-                  <span>Verified Local Shops</span>
-                </div>
-                <div className="flex items-center space-x-1.5">
-                  <ShieldCheck className="h-4 w-4 text-teal-600" />
-                  <span>KYC Verified Travellers</span>
-                </div>
-                <div className="flex items-center space-x-1.5">
-                  <LockBadge />
-                  <span>Secure 6-Digit Delivery OTP</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Route Pooling Visual Card */}
-            <div className="lg:col-span-5">
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                      Live Route Match Demonstration
-                    </span>
-                    <h3 className="font-bold text-slate-900">How Route Pooling Works</h3>
-                  </div>
-                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">
-                    Active Pool
-                  </span>
-                </div>
-
-                {/* Diagram */}
-                <div className="rounded-xl bg-slate-50 p-4 border border-slate-200 space-y-3">
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center space-x-1.5 text-slate-700">
-                      <div className="h-2 w-2 rounded-full bg-brand-600" />
-                      <span className="font-semibold">Commute Origin (Sector A)</span>
-                    </div>
-                    <span className="text-slate-400">→</span>
-                    <div className="flex items-center space-x-1.5 text-slate-700">
-                      <div className="h-2 w-2 rounded-full bg-rose-500" />
-                      <span className="font-semibold">Destination (Market Hub B)</span>
-                    </div>
-                  </div>
-
-                  {/* Route Bar */}
-                  <div className="relative h-2 w-full rounded-full bg-slate-200">
-                    <div className="absolute left-0 top-0 h-2 w-full rounded-full bg-brand-500" />
-                  </div>
-
-                  <div className="text-[11px] text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200">
-                    <p className="font-medium text-slate-800 mb-1">
-                      1 Verified Traveller · 3 Orders Pooled:
-                    </p>
-                    <ul className="space-y-1 text-slate-500">
-                      <li>• Pickup Stop 1: Heritage Hardware (Package #1)</li>
-                      <li>• Pickup Stop 2: Green Agro Provisions (Package #2)</li>
-                      <li>• Delivery: Destination Area B (Delivery Confirmed via OTP)</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between text-xs text-slate-600 pt-1">
-                  <span>Zero unnecessary dispatch trips</span>
-                  <span className="font-semibold text-brand-700">Low carbon footprint</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ACTIVE LOCATION BAR */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-brand-200 bg-brand-50/60 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center space-x-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 text-white shadow-sm">
-              <MapPin className="h-5 w-5" />
+    <div className="min-h-screen bg-[#f1f2f4]">
+      
+      {/* 1. Mobile App Install / PWA Top Strip */}
+      {showPwaBanner && (
+        <div className="md:hidden bg-gradient-to-r from-blue-900 to-[#2874f0] text-white px-3 py-2 flex items-center justify-between text-xs shadow-sm">
+          <div className="flex items-center space-x-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded bg-amber-400 text-slate-900 font-black text-xs shadow">
+              LM
             </div>
             <div>
-              <p className="text-xs font-semibold text-brand-900 uppercase tracking-wider">
-                Current Shopping & Delivery Locality
-              </p>
-              <h2 className="text-sm sm:text-base font-bold text-slate-900">
-                {currentLocation.city}: {currentLocation.formattedAddress}
-              </h2>
+              <p className="font-bold leading-tight">LocalMesh Mobile App</p>
+              <p className="text-[10px] text-blue-200">Faster orders & live route tracking</p>
             </div>
           </div>
-          <Link
-            href="/shops"
-            className="rounded-lg bg-white px-4 py-2 text-xs font-semibold text-brand-700 border border-brand-300 shadow-sm hover:bg-brand-50 transition-colors"
-          >
-            Browse Nearby Inventory →
-          </Link>
-        </div>
-      </section>
-
-      {/* BROWSE BY CATEGORY */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Shop by Category</h2>
-            <p className="text-sm text-slate-500">Essential products from local specialist merchants</p>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => alert('To install: Tap your browser menu and choose "Add to Home screen"')}
+              className="bg-[#ff9f00] text-slate-900 px-2.5 py-1 rounded text-[11px] font-bold shadow hover:bg-amber-400"
+            >
+              Get App
+            </button>
+            <button
+              onClick={() => setShowPwaBanner(false)}
+              className="text-blue-200 hover:text-white text-base px-1"
+            >
+              ×
+            </button>
           </div>
-          <Link href="/search" className="text-xs font-semibold text-brand-600 hover:text-brand-700">
-            View all categories →
-          </Link>
         </div>
+      )}
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-3">
+      {/* 2. Flipkart-Style Horizontal Category Scroller */}
+      <section className="bg-white border-b border-slate-200/80 shadow-sm overflow-x-auto no-scrollbar">
+        <div className="max-w-7xl mx-auto px-2 py-3 flex items-center space-x-4 sm:space-x-8 sm:justify-center">
           {categories.map((cat) => (
             <Link
               key={cat.slug}
-              href={`/search?category=${cat.slug}`}
-              className="group flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white p-3 text-center shadow-sm hover:border-brand-500 hover:shadow-md transition-all"
+              href={`/search?category=${encodeURIComponent(cat.slug)}`}
+              className="flex flex-col items-center justify-center min-w-[64px] sm:min-w-[80px] group text-center shrink-0"
             >
-              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-brand-100 group-hover:text-brand-700 transition-colors">
-                <ShoppingBag className="h-5 w-5" />
+              <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-[#2874f0] shadow-sm group-hover:scale-105 group-hover:bg-[#2874f0] group-hover:text-white transition-all">
+                <Store className="h-5 w-5 sm:h-6 sm:w-6 transition-transform" />
               </div>
-              <span className="text-xs font-semibold text-slate-800 line-clamp-1">{cat.name}</span>
+              <span className="text-[11px] sm:text-xs font-semibold text-[#212121] group-hover:text-[#2874f0] mt-1.5 line-clamp-1">
+                {cat.name.split(' ')[0]}
+              </span>
             </Link>
           ))}
+          <Link
+            href="/shops"
+            className="flex flex-col items-center justify-center min-w-[64px] sm:min-w-[80px] group text-center shrink-0"
+          >
+            <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-[#ff9f00] shadow-sm group-hover:scale-105 group-hover:bg-[#ff9f00] group-hover:text-white transition-all">
+              <MapPin className="h-5 w-5 sm:h-6 sm:w-6" />
+            </div>
+            <span className="text-[11px] sm:text-xs font-semibold text-[#212121] group-hover:text-[#ff9f00] mt-1.5 line-clamp-1">
+              All Shops
+            </span>
+          </Link>
         </div>
       </section>
 
-      {/* NEARBY SHOPS WITH INTERACTIVE MAP PREVIEW */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-              Verified Shops in {currentLocation.city || 'Your Area'}
-            </h2>
-            <p className="text-sm text-slate-500">Independent merchants with real physical inventory</p>
+      {/* 3. Hero Promotional Banner Carousel */}
+      <section className="max-w-7xl mx-auto p-2 sm:p-4">
+        <div className="relative overflow-hidden rounded-md sm:rounded-lg shadow-md">
+          <div
+            className={`bg-gradient-to-r ${banners[activeBanner].bg} text-white p-5 sm:p-10 transition-all duration-700 min-h-[170px] sm:min-h-[220px] flex flex-col justify-center`}
+          >
+            <div className="max-w-xl">
+              <span className={`inline-block px-2 py-0.5 rounded text-[10px] sm:text-xs font-extrabold uppercase tracking-wider bg-black/20 ${banners[activeBanner].accentColor} mb-2`}>
+                ⚡ {banners[activeBanner].tag}
+              </span>
+              <h1 className="text-xl sm:text-3xl font-black tracking-tight leading-snug drop-shadow-sm">
+                {banners[activeBanner].title}
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-100 mt-1 sm:mt-2 line-clamp-2 max-w-lg">
+                {banners[activeBanner].subtitle}
+              </p>
+              <div className="mt-3.5 sm:mt-5 flex items-center space-x-3">
+                <Link
+                  href={banners[activeBanner].link}
+                  className="bg-[#ff9f00] hover:bg-amber-400 text-slate-900 text-xs sm:text-sm font-bold px-4 py-2 rounded-sm shadow-md transition-transform active:scale-95 inline-flex items-center space-x-1"
+                >
+                  <span>{banners[activeBanner].cta}</span>
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
           </div>
-          <Link href="/shops" className="text-xs font-semibold text-brand-600 hover:text-brand-700">
-            View Map & List →
-          </Link>
-        </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* Shop Cards Grid */}
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Carousel Dot Indicators */}
+          <div className="absolute bottom-2 right-4 flex space-x-1.5">
+            {banners.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveBanner(idx)}
+                aria-label={`Slide ${idx + 1}`}
+                className={`h-1.5 rounded-full transition-all ${
+                  activeBanner === idx ? 'w-5 bg-white' : 'w-1.5 bg-white/40'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Flipkart-Style "Deal of the Day" Horizontal Product Scroller */}
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 mb-4">
+        <div className="bg-white rounded-md shadow-sm border border-slate-200/80 p-3 sm:p-4">
+          
+          {/* Section Header */}
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
+            <div className="flex items-center space-x-2">
+              <div className="p-1 rounded bg-amber-50 text-[#ff9f00]">
+                <Flame className="h-5 w-5 fill-[#ff9f00]" />
+              </div>
+              <div>
+                <h2 className="text-base sm:text-lg font-bold text-[#212121]">Deal of the Day</h2>
+                <div className="flex items-center space-x-1.5 text-xs text-slate-500">
+                  <Clock className="h-3 w-3 text-slate-400" />
+                  <span>Ends in <strong className="text-[#388e3c]">04h : 32m : 18s</strong></span>
+                </div>
+              </div>
+            </div>
+            <Link
+              href="/search"
+              className="bg-[#2874f0] text-white text-xs font-bold px-3 py-1.5 rounded-sm hover:bg-blue-700 shadow-sm"
+            >
+              VIEW ALL
+            </Link>
+          </div>
+
+          {/* Horizontal Product Cards Row */}
+          <div className="flex space-x-3 overflow-x-auto no-scrollbar pb-2 pt-1">
+            {deals.map((prod) => {
+              const originalPrice = Math.round(prod.price * 1.35);
+              const discountPercent = Math.round(((originalPrice - prod.price) / originalPrice) * 100);
+
+              return (
+                <div
+                  key={prod._id}
+                  className="min-w-[155px] max-w-[155px] sm:min-w-[200px] sm:max-w-[200px] rounded border border-slate-200/70 p-2 sm:p-3 flex flex-col justify-between hover:shadow-md transition-shadow bg-white shrink-0 group"
+                >
+                  <Link href={`/products/${prod._id}`} className="block">
+                    {/* Product Image */}
+                    <div className="h-32 sm:h-40 w-full rounded bg-slate-50 flex items-center justify-center p-2 mb-2 relative overflow-hidden">
+                      <img
+                        src={prod.images?.[0] || '/placeholder-product.svg'}
+                        alt={prod.name}
+                        className="h-full w-full object-contain group-hover:scale-105 transition-transform"
+                      />
+                      <span className="absolute top-1 left-1 bg-[#388e3c] text-white text-[9px] font-bold px-1 py-0.5 rounded">
+                        {discountPercent}% off
+                      </span>
+                    </div>
+
+                    {/* Shop Brand Title */}
+                    <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold truncate">
+                      {prod.shopName}
+                    </p>
+
+                    {/* Product Name */}
+                    <h3 className="text-xs sm:text-sm font-semibold text-[#212121] line-clamp-1 mt-0.5 group-hover:text-[#2874f0]">
+                      {prod.name}
+                    </h3>
+
+                    {/* Star Rating Badge (Flipkart Style) */}
+                    <div className="flex items-center space-x-1.5 mt-1">
+                      <span className="inline-flex items-center space-x-0.5 bg-[#388e3c] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+                        <span>4.3</span>
+                        <Star className="h-2.5 w-2.5 fill-white" />
+                      </span>
+                      <span className="text-[10px] text-slate-400">(42)</span>
+                    </div>
+
+                    {/* Pricing */}
+                    <div className="mt-1.5 flex items-baseline space-x-1.5">
+                      <span className="text-sm sm:text-base font-bold text-[#212121]">
+                        ₹{prod.price}
+                      </span>
+                      <span className="text-[11px] text-slate-400 line-through">
+                        ₹{originalPrice}
+                      </span>
+                    </div>
+
+                    {/* Route Pool Tag */}
+                    <div className="mt-1 text-[10px] text-[#2874f0] font-medium flex items-center space-x-1">
+                      <Zap className="h-2.5 w-2.5 fill-[#2874f0]" />
+                      <span>Route Delivery</span>
+                    </div>
+                  </Link>
+
+                  {/* Add to Cart Button */}
+                  <button
+                    onClick={(e) => handleQuickAdd(prod, e)}
+                    className="mt-2 w-full bg-[#ff9f00] hover:bg-amber-400 text-slate-900 font-bold text-xs py-1.5 rounded-sm transition-colors shadow-sm active:scale-95"
+                  >
+                    {addedItem === prod._id ? '✓ Added' : 'Add to Cart'}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Top Local Shops Near You */}
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 mb-4">
+        <div className="bg-white rounded-md shadow-sm border border-slate-200/80 p-3 sm:p-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
+            <div>
+              <h2 className="text-base sm:text-lg font-bold text-[#212121]">
+                Verified Neighbourhood Merchants
+              </h2>
+              <p className="text-xs text-slate-500">
+                Near {currentLocation.city || 'your area'} · Real neighbourhood inventory
+              </p>
+            </div>
+            <Link
+              href="/shops"
+              className="text-xs font-bold text-[#2874f0] hover:underline"
+            >
+              See All Shops →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {nearbyShops.map((shop) => (
-              <div
+              <Link
                 key={shop._id}
-                className="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:border-brand-400 hover:shadow-md transition-all"
+                href={`/shops/${shop._id}`}
+                className="rounded border border-slate-200/80 p-3 hover:border-[#2874f0] hover:shadow-md transition-all group flex flex-col justify-between bg-white"
               >
-                <div className="space-y-2">
+                <div>
                   <div className="flex items-start justify-between">
-                    <span className="text-xs font-semibold text-brand-700 uppercase tracking-wider">
-                      {shop.category}
-                    </span>
+                    <div>
+                      <h3 className="font-bold text-sm text-[#212121] group-hover:text-[#2874f0] line-clamp-1">
+                        {shop.businessName}
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-0.5">{shop.category}</p>
+                    </div>
                     {shop.verificationStatus === 'VERIFIED' && (
-                      <Badge type="verified-shop" />
+                      <span className="bg-emerald-50 text-[#388e3c] border border-emerald-200 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center space-x-0.5">
+                        <CheckCircle className="h-2.5 w-2.5 fill-[#388e3c] text-white" />
+                        <span>Verified</span>
+                      </span>
                     )}
                   </div>
 
-                  <Link href={`/shops/${shop._id}`}>
-                    <h3 className="font-bold text-slate-900 group-hover:text-brand-600 transition-colors">
-                      {shop.businessName}
-                    </h3>
-                  </Link>
-
-                  <p className="text-xs text-slate-500 line-clamp-2">{shop.address}</p>
-
-                  <div className="flex items-center space-x-3 text-xs text-slate-600 pt-1">
-                    <span className="font-medium text-amber-600">★ {shop.rating.toFixed(1)}</span>
-                    <span>·</span>
-                    <span className="text-slate-500">
-                      {shop.openingTime} - {shop.closingTime}
-                    </span>
-                  </div>
+                  <p className="text-xs text-slate-500 line-clamp-1 mt-2 flex items-center space-x-1">
+                    <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
+                    <span>{shop.address || shop.location?.formattedAddress}</span>
+                  </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-xs text-slate-500">
-                    {(shop as any).productCount || 0} Products
+                <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <span className="text-slate-600 font-medium">
+                    {shop.distanceKm !== undefined ? `📍 ${shop.distanceKm.toFixed(1)} km away` : 'Nearby'}
                   </span>
-                  <Link
-                    href={`/shops/${shop._id}`}
-                    className="text-xs font-semibold text-brand-600 hover:text-brand-700"
-                  >
-                    View Products →
-                  </Link>
+                  <span className="font-bold text-[#2874f0] group-hover:translate-x-0.5 transition-transform">
+                    Visit Shop →
+                  </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
-
-          {/* Map Preview */}
-          <div className="lg:col-span-5">
-            <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-slate-800">Local Shop Distribution Map</span>
-                <span className="text-slate-500">{nearbyShops.length} shops in zone</span>
-              </div>
-              <ShopMap
-                shops={nearbyShops as any}
-                userLocation={{
-                  latitude: currentLocation.latitude,
-                  longitude: currentLocation.longitude,
-                }}
-                height="320px"
-              />
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* POPULAR LOCAL PRODUCTS */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Featured Products</h2>
-            <p className="text-sm text-slate-500">Fast-moving essentials ready for immediate local dispatch</p>
-          </div>
-          <Link href="/search" className="text-xs font-semibold text-brand-600 hover:text-brand-700">
-            Browse All Products →
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {popularProducts.map((prod) => (
-            <div
-              key={prod._id}
-              className="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition-all"
-            >
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-slate-500">{prod.categoryName}</span>
-                  <Badge
-                    type={
-                      prod.availability === 'IN_STOCK'
-                        ? 'in-stock'
-                        : prod.availability === 'LOW_STOCK'
-                        ? 'low-stock'
-                        : 'out-of-stock'
-                    }
-                  />
-                </div>
-
-                <Link href={`/products/${prod._id}`}>
-                  <h4 className="font-semibold text-sm text-slate-900 hover:text-brand-600 transition-colors line-clamp-1">
-                    {prod.name}
-                  </h4>
-                </Link>
-
-                <p className="text-xs text-slate-500 line-clamp-2">{prod.description}</p>
-
-                <div className="text-xs text-slate-500">
-                  Shop: <span className="font-medium text-slate-700">{(prod as any).shop?.businessName || 'Local Shop'}</span>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <div>
-                  <span className="text-base font-bold text-slate-900">₹{prod.price}</span>
-                  <span className="text-[11px] text-slate-500"> / {prod.unit}</span>
-                </div>
-
-                <Link
-                  href={`/products/${prod._id}`}
-                  className="rounded-lg bg-brand-50 px-3 py-1.5 text-xs font-semibold text-brand-700 hover:bg-brand-100 transition-colors"
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* THREE VALUE PILLARS (FOR CUSTOMERS / SHOPS / TRAVELLERS) */}
-      <section className="bg-slate-900 py-16 text-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <h2 className="text-3xl font-extrabold tracking-tight">Built for Sustainable Local Ecosystems</h2>
-            <p className="text-sm text-slate-400">
-              {brandName} aligns incentives so everyone wins: fair prices for buyers, higher margins for shops, and income for travellers on existing journeys.
+      {/* 6. Why LocalMesh Route Pooling (The Core Value Proposition) */}
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 mb-6">
+        <div className="bg-gradient-to-r from-blue-900 to-[#1a5dc7] rounded-md sm:rounded-lg p-5 sm:p-6 text-white shadow-sm">
+          <div className="max-w-3xl mb-4">
+            <span className="text-amber-300 font-bold text-xs uppercase tracking-wider">
+              Smart Sustainable Logistics
+            </span>
+            <h2 className="text-lg sm:text-2xl font-black mt-1">
+              How LocalMesh Route Pooling Works
+            </h2>
+            <p className="text-xs sm:text-sm text-blue-100 mt-1">
+              We never hire dedicated riders to criss-cross the city for single packs. We pool compatible orders along regular commuter journeys.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* For Customers */}
-            <div className="rounded-2xl bg-slate-800/80 p-6 border border-slate-700 space-y-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-500/20 text-brand-400">
-                <ShoppingBag className="h-6 w-6" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+            <div className="bg-white/10 rounded p-3 backdrop-blur-sm border border-white/10">
+              <div className="h-8 w-8 rounded bg-amber-400 text-slate-900 flex items-center justify-center font-bold text-sm mb-2">
+                1
               </div>
-              <h3 className="text-lg font-bold">For Customers</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Find it nearby. Get it delivered. No inflated convenience markups, no forced cart minimums. Support local businesses while receiving items smoothly through route pooling.
+              <h3 className="font-bold text-sm text-white">Neighbourhood First</h3>
+              <p className="text-xs text-blue-100 mt-1">
+                Order from local corner stores, bakeries, and tool marts at true local prices without 30% aggregator markups.
               </p>
-              <ul className="text-xs text-slate-400 space-y-1.5 pt-2">
-                <li>✓ Multi-shop cart checkout</li>
-                <li>✓ Real-time route tracking</li>
-                <li>✓ Secure 6-digit Delivery OTP</li>
-              </ul>
             </div>
 
-            {/* For Shops */}
-            <div className="rounded-2xl bg-slate-800/80 p-6 border border-slate-700 space-y-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/20 text-blue-400">
-                <Store className="h-6 w-6" />
+            <div className="bg-white/10 rounded p-3 backdrop-blur-sm border border-white/10">
+              <div className="h-8 w-8 rounded bg-amber-400 text-slate-900 flex items-center justify-center font-bold text-sm mb-2">
+                2
               </div>
-              <h3 className="text-lg font-bold">For Shops & Merchants</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Take your local business online with zero technical friction. Control your catalog, retain direct customer loyalty, and never bleed 30% aggregator commissions.
+              <h3 className="font-bold text-sm text-white">Commuters Deliver</h3>
+              <p className="text-xs text-blue-100 mt-1">
+                Verified travellers heading in your direction pick up and drop off orders, earning fair rewards on their existing commute.
               </p>
-              <ul className="text-xs text-slate-400 space-y-1.5 pt-2">
-                <li>✓ Verified Business Badge</li>
-                <li>✓ Live Inventory & SKU Manager</li>
-                <li>✓ Transparent low platform fee</li>
-              </ul>
             </div>
 
-            {/* For Travellers */}
-            <div className="rounded-2xl bg-slate-800/80 p-6 border border-slate-700 space-y-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-route-500/20 text-route-400">
-                <Car className="h-6 w-6" />
+            <div className="bg-white/10 rounded p-3 backdrop-blur-sm border border-white/10">
+              <div className="h-8 w-8 rounded bg-amber-400 text-slate-900 flex items-center justify-center font-bold text-sm mb-2">
+                3
               </div>
-              <h3 className="text-lg font-bold">For Travellers & Partners</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Earn on the journey you are already making. Declare your planned trip, let our deterministic algorithm pool compatible orders on that exact route, and earn payouts.
+              <h3 className="font-bold text-sm text-white">Secure 6-Digit OTP</h3>
+              <p className="text-xs text-blue-100 mt-1">
+                Packages are only marked complete when you provide your confidential 6-digit Delivery OTP directly to the commuter.
               </p>
-              <ul className="text-xs text-slate-400 space-y-1.5 pt-2">
-                <li>✓ Locality & KYC verification</li>
-                <li>✓ Deterministic route pooling</li>
-                <li>✓ Instant earnings upon OTP confirmation</li>
-              </ul>
             </div>
           </div>
         </div>
       </section>
-    </div>
-  );
-}
 
-function LockBadge() {
-  return (
-    <svg className="h-4 w-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-    </svg>
+      {/* 7. Interactive Map Explorer */}
+      <section className="max-w-7xl mx-auto px-2 sm:px-4 mb-8">
+        <div className="bg-white rounded-md shadow-sm border border-slate-200/80 p-3 sm:p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h2 className="text-base sm:text-lg font-bold text-[#212121]">
+                Geographic Shop Map
+              </h2>
+              <p className="text-xs text-slate-500">
+                Explore local shops positioned around {currentLocation.city || 'your area'}
+              </p>
+            </div>
+            <Link
+              href="/shops"
+              className="bg-blue-50 text-[#2874f0] border border-blue-200 text-xs font-bold px-3 py-1.5 rounded-sm hover:bg-blue-100"
+            >
+              Full Map View
+            </Link>
+          </div>
+          <div className="h-64 sm:h-80 rounded overflow-hidden border border-slate-200">
+            <ShopMap shops={nearbyShops} height="100%" />
+          </div>
+        </div>
+      </section>
+
+    </div>
   );
 }

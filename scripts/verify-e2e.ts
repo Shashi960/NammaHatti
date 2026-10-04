@@ -19,7 +19,7 @@ import { RoutePoolModel } from '../models/RoutePool';
 import { DeterministicRouteMatchingService } from '../services/RouteMatchingService';
 import { validateOrderTransition } from '../lib/orderStateMachine';
 import { pricingService } from '../services/PricingService';
-import { haversineDistanceKm } from '../lib/haversine';
+import { haversineDistanceKm } from '../services/MapService';
 
 async function runEndToEndVerification() {
   console.log('================================================================');
@@ -197,7 +197,7 @@ async function runEndToEndVerification() {
     trip.toObject(),
     [newOrder._id.toString()]
   );
-  console.log(`✓ Route Pool Formed: Pool #${routePool.poolCode} (Total Earnings: ₹${routePool.totalEarnings})`);
+  console.log(`✓ Route Pool Formed: Pool #${routePool.poolCode} (Total Earnings: ₹${routePool.estimatedEarnings})`);
 
   // Accept Route Pool
   const acceptedPool = await matchingService.acceptRoutePool(

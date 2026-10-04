@@ -9,6 +9,7 @@ export interface ProductDimensions {
 export interface Product {
   _id: string;
   shopId: string;
+  shopName?: string;
   name: string;
   description: string;
   categoryId: string;

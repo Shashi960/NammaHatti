@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useLocation } from '@/context/LocationContext';
 import { useCart } from '@/context/CartContext';
@@ -18,10 +19,13 @@ import {
   X,
   Shield,
   ChevronDown,
+  Search,
+  Sparkles,
 } from 'lucide-react';
 import { LocationPicker } from '@/components/maps/LocationPicker';
 
 export function Navbar() {
+  const router = useRouter();
   const { user, logout } = useAuth();
   const { currentLocation, setCurrentLocation } = useLocation();
   const { totalItems } = useCart();
@@ -29,8 +33,18 @@ export function Navbar() {
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || 'LocalMesh';
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push('/search');
+    }
+  };
 
   const getDashboardHref = () => {
     if (!user) return '/login';
@@ -48,246 +62,316 @@ export function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
-          {/* Left: Brand + Location */}
-          <div className="flex items-center space-x-6">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-brand-700 to-brand-500 text-white shadow-sm font-bold text-lg">
-                LM
-              </div>
-              <div>
-                <span className="text-xl font-bold tracking-tight text-slate-900">
-                  {brandName}
-                </span>
-                <span className="hidden sm:inline-block ml-1.5 text-[10px] uppercase font-semibold text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded">
-                  Local · Route First
-                </span>
-              </div>
-            </Link>
+      <header className="sticky top-0 z-40 bg-[#2874f0] text-white shadow-md">
+        {/* Main Header Container */}
+        <div className="mx-auto max-w-7xl px-3 py-2.5 sm:px-6">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
+            
+            {/* 1. Brand Logo */}
+            <div className="flex items-center space-x-3">
+              <Link href="/" className="flex flex-col leading-none group">
+                <div className="flex items-center space-x-1">
+                  <span className="text-xl sm:text-2xl font-black italic tracking-tight text-white drop-shadow-sm">
+                    {brandName}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-0.5 text-[10px] text-amber-300 italic font-semibold tracking-wider">
+                  <span>Explore</span>
+                  <span className="text-white font-bold">Local</span>
+                  <Sparkles className="h-2.5 w-2.5 text-amber-300 inline fill-amber-300" />
+                </div>
+              </Link>
+            </div>
 
-            {/* Location Selector Button */}
+            {/* 2. Desktop Search Bar (Flipkart Style) */}
+            <div className="hidden md:flex flex-1 max-w-2xl mx-2">
+              <form onSubmit={handleSearchSubmit} className="relative w-full">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search for local shops, fresh bakery, electronics, grocery..."
+                  className="w-full rounded-sm bg-white py-2 pl-4 pr-11 text-sm text-[#212121] placeholder-slate-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-300"
+                />
+                <button
+                  type="submit"
+                  aria-label="Search"
+                  className="absolute right-0 top-0 bottom-0 px-3.5 flex items-center justify-center text-[#2874f0] hover:text-blue-700"
+                >
+                  <Search className="h-4 w-4" />
+                </button>
+              </form>
+            </div>
+
+            {/* 3. Location Selector Pill */}
             <button
               onClick={() => setShowLocationModal(true)}
-              className="hidden md:flex items-center space-x-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-700 hover:border-brand-400 hover:bg-white transition-all max-w-[220px]"
+              className="hidden lg:flex items-center space-x-1.5 rounded-sm bg-white/10 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20 transition-colors border border-white/20"
+              title="Change Delivery Location"
             >
-              <MapPin className="h-4 w-4 shrink-0 text-brand-600" />
-              <div className="truncate text-left">
-                <span className="block font-semibold text-slate-900 leading-tight">
-                  {currentLocation.city || 'Select Area'}
-                </span>
-                <span className="block truncate text-[11px] text-slate-500">
-                  {currentLocation.formattedAddress}
+              <MapPin className="h-3.5 w-3.5 text-amber-300 shrink-0" />
+              <div className="text-left leading-tight max-w-[150px] truncate">
+                <span className="block text-[10px] text-blue-100 uppercase tracking-wider font-semibold">Deliver to</span>
+                <span className="truncate block font-bold">
+                  {currentLocation.city || 'Select Area'} {currentLocation.postalCode ? `(${currentLocation.postalCode})` : ''}
                 </span>
               </div>
-              <ChevronDown className="h-3 w-3 shrink-0 text-slate-400" />
+              <ChevronDown className="h-3 w-3 text-white/70 ml-0.5" />
             </button>
-          </div>
 
-          {/* Center Links (Desktop) */}
-          <nav className="hidden lg:flex items-center space-x-6 text-sm font-medium text-slate-600">
-            <Link href="/shops" className="hover:text-brand-600 transition-colors flex items-center space-x-1">
-              <Store className="h-4 w-4" />
-              <span>Explore Shops</span>
-            </Link>
-            <Link href="/search" className="hover:text-brand-600 transition-colors flex items-center space-x-1">
-              <Compass className="h-4 w-4" />
-              <span>Products</span>
-            </Link>
-            <Link href="/traveller" className="hover:text-brand-600 transition-colors flex items-center space-x-1 text-route-700 font-semibold bg-route-50 px-2.5 py-1 rounded-md border border-route-200">
-              <Car className="h-4 w-4 text-route-600" />
-              <span>Travel & Earn</span>
-            </Link>
-          </nav>
-
-          {/* Right: Cart + User Action */}
-          <div className="flex items-center space-x-3">
-            {/* Cart Icon */}
-            <Link
-              href="/cart"
-              className="relative flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 transition-colors"
-            >
-              <ShoppingBag className="h-5 w-5" />
-              {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-600 text-[11px] font-bold text-white shadow-sm">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-
-            {/* Notifications (if logged in) */}
-            {user && (
+            {/* 4. Desktop Right Action Items */}
+            <div className="hidden md:flex items-center space-x-4">
+              
+              {/* Route Commute Portal */}
               <Link
-                href="/notifications"
-                className="relative flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 transition-colors"
+                href="/traveller"
+                className="flex items-center space-x-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-sm bg-[#ff9f00] text-slate-900 hover:bg-amber-400 transition-colors shadow-sm"
               >
-                <Bell className="h-5 w-5" />
+                <Car className="h-3.5 w-3.5 text-slate-900" />
+                <span>Earn on Commute</span>
               </Link>
-            )}
 
-            {/* User Profile / Login */}
-            {user ? (
-              <div className="relative">
-                <button
-                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center space-x-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors shadow-sm"
-                >
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-brand-800 font-bold">
-                    {user.name.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="hidden sm:inline-block max-w-[100px] truncate">{user.name}</span>
-                  <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-600">
-                    {user.role}
-                  </span>
-                  <ChevronDown className="h-3 w-3 text-slate-400" />
-                </button>
+              {/* Explore Shops */}
+              <Link
+                href="/shops"
+                className="flex items-center space-x-1 text-xs font-medium text-white hover:text-amber-200 transition-colors py-1.5"
+              >
+                <Store className="h-3.5 w-3.5" />
+                <span>Shops</span>
+              </Link>
 
-                {userDropdownOpen && (
-                  <div
-                    className="absolute right-0 mt-2 w-52 rounded-xl border border-slate-200 bg-white p-1 text-xs shadow-xl z-50"
-                    onClick={() => setUserDropdownOpen(false)}
+              {/* User Dropdown / Login */}
+              {user ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                    className="flex items-center space-x-1.5 bg-white text-[#2874f0] px-3.5 py-1.5 rounded-sm text-xs font-bold shadow-sm hover:bg-slate-50 transition-colors"
                   >
-                    <div className="px-3 py-2 border-b border-slate-100">
-                      <p className="font-semibold text-slate-900">{user.name}</p>
-                      <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
-                    </div>
+                    <User className="h-3.5 w-3.5" />
+                    <span className="max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
+                    <ChevronDown className="h-3 w-3 text-[#2874f0]" />
+                  </button>
 
-                    <Link
-                      href={getDashboardHref()}
-                      className="flex items-center space-x-2 rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 transition-colors"
-                    >
-                      <User className="h-4 w-4 text-brand-600" />
-                      <span className="font-medium">Dashboard</span>
-                    </Link>
+                  {userDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-52 rounded-md bg-white py-1 shadow-xl ring-1 ring-black/5 z-50 text-slate-800">
+                      <div className="border-b border-slate-100 px-4 py-2.5 bg-slate-50">
+                        <p className="text-xs font-bold text-slate-900">{user.name}</p>
+                        <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
+                        <span className="mt-1 inline-block rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-bold text-[#2874f0]">
+                          {user.role}
+                        </span>
+                      </div>
 
-                    {user.role === 'ADMIN' && (
                       <Link
-                        href="/admin/dashboard"
-                        className="flex items-center space-x-2 rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 transition-colors"
+                        href={getDashboardHref()}
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center space-x-2 px-4 py-2 text-xs hover:bg-slate-50 text-slate-700"
                       >
-                        <Shield className="h-4 w-4 text-purple-600" />
-                        <span className="font-medium">Admin Console</span>
+                        <Shield className="h-3.5 w-3.5 text-[#2874f0]" />
+                        <span>My Dashboard</span>
                       </Link>
-                    )}
 
-                    <Link
-                      href="/orders"
-                      className="flex items-center space-x-2 rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 transition-colors"
-                    >
-                      <ShoppingBag className="h-4 w-4 text-blue-600" />
-                      <span className="font-medium">My Orders</span>
-                    </Link>
+                      <Link
+                        href="/customer/dashboard"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center space-x-2 px-4 py-2 text-xs hover:bg-slate-50 text-slate-700"
+                      >
+                        <ShoppingBag className="h-3.5 w-3.5 text-[#388e3c]" />
+                        <span>Orders & Deliveries</span>
+                      </Link>
 
-                    <button
-                      onClick={logout}
-                      className="w-full flex items-center space-x-2 rounded-lg px-3 py-2 text-rose-600 hover:bg-rose-50 transition-colors"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      <span className="font-medium">Sign Out</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => {
+                          setUserDropdownOpen(false);
+                          logout();
+                        }}
+                        className="flex w-full items-center space-x-2 px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 border-t border-slate-100"
+                      >
+                        <LogOut className="h-3.5 w-3.5" />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
                 <Link
                   href="/login"
-                  className="rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
+                  className="bg-white text-[#2874f0] px-5 py-1.5 rounded-sm text-xs font-bold shadow-sm hover:bg-slate-50 transition-colors"
                 >
-                  Sign In
+                  Login
                 </Link>
-                <Link
-                  href="/register"
-                  className="rounded-lg bg-brand-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow hover:bg-brand-700 transition-colors"
-                >
-                  Register
-                </Link>
-              </div>
-            )}
+              )}
 
-            {/* Mobile Menu Toggle */}
+              {/* Cart */}
+              <Link
+                href="/cart"
+                className="relative flex items-center space-x-1.5 text-xs font-bold text-white hover:text-amber-200 transition-colors py-1.5"
+              >
+                <div className="relative">
+                  <ShoppingBag className="h-4 w-4" />
+                  {totalItems > 0 && (
+                    <span className="absolute -top-2 -right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#fb641b] px-1 text-[10px] font-bold text-white shadow-sm">
+                      {totalItems}
+                    </span>
+                  )}
+                </div>
+                <span>Cart</span>
+              </Link>
+            </div>
+
+            {/* Mobile Header Right Icons */}
+            <div className="flex items-center space-x-2 md:hidden">
+              <button
+                onClick={() => setShowLocationModal(true)}
+                className="p-1 text-white hover:text-amber-200"
+                title="Change Location"
+              >
+                <MapPin className="h-5 w-5" />
+              </button>
+
+              <Link href="/cart" className="relative p-1 text-white" aria-label="Cart">
+                <ShoppingBag className="h-5 w-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#fb641b] px-1 text-[10px] font-bold text-white shadow-sm animate-pulse">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-1 text-white hover:text-amber-200"
+                aria-label="Toggle Menu"
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Search Row (Always visible like Flipkart App) */}
+          <div className="mt-2.5 md:hidden">
+            <form onSubmit={handleSearchSubmit} className="relative w-full">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search for local shops, grocery, tools..."
+                className="w-full rounded-md bg-white py-2 pl-3 pr-10 text-xs text-[#212121] placeholder-slate-400 shadow-inner focus:outline-none"
+              />
+              <button
+                type="submit"
+                aria-label="Submit Search"
+                className="absolute right-0 top-0 bottom-0 px-3 flex items-center justify-center text-[#2874f0]"
+              >
+                <Search className="h-4 w-4" />
+              </button>
+            </form>
+          </div>
+
+          {/* Mobile Current Location Sub-bar */}
+          <div className="mt-1.5 flex items-center justify-between text-[11px] text-blue-100 md:hidden border-t border-blue-400/40 pt-1">
+            <div className="flex items-center space-x-1 truncate max-w-[280px]">
+              <MapPin className="h-3 w-3 text-amber-300 shrink-0" />
+              <span className="truncate">
+                Delivering to: <strong className="text-white">{currentLocation.city || 'Your Area'}</strong> {currentLocation.postalCode ? `(${currentLocation.postalCode})` : ''}
+              </span>
+            </div>
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden rounded-lg p-2 text-slate-600 hover:bg-slate-100"
+              onClick={() => setShowLocationModal(true)}
+              className="text-amber-300 font-bold shrink-0 ml-2 hover:underline"
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              Change
             </button>
           </div>
         </div>
 
-        {/* Mobile Subheader Location bar */}
-        <div className="md:hidden border-t border-slate-100 bg-slate-50/80 px-4 py-1.5 flex items-center justify-between text-xs">
-          <button
-            onClick={() => setShowLocationModal(true)}
-            className="flex items-center space-x-1.5 text-slate-700 truncate"
-          >
-            <MapPin className="h-3.5 w-3.5 text-brand-600 shrink-0" />
-            <span className="font-semibold text-slate-900">{currentLocation.city || 'Set Area'}:</span>
-            <span className="truncate text-slate-500">{currentLocation.formattedAddress}</span>
-          </button>
-        </div>
-
-        {/* Mobile Menu Drawer */}
+        {/* Mobile Slide-Out Drawer Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-2 text-sm">
-            <Link
-              href="/shops"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-lg px-3 py-2 font-medium text-slate-700 hover:bg-slate-50"
-            >
-              Explore Shops
-            </Link>
-            <Link
-              href="/search"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-lg px-3 py-2 font-medium text-slate-700 hover:bg-slate-50"
-            >
-              Search Products
-            </Link>
-            <Link
-              href="/traveller"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-lg px-3 py-2 font-medium text-route-700 bg-route-50"
-            >
-              Travel & Earn (Route Pooling)
-            </Link>
-            <Link
-              href="/orders"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-lg px-3 py-2 font-medium text-slate-700 hover:bg-slate-50"
-            >
-              Track Orders
-            </Link>
+          <div className="md:hidden border-t border-blue-400/40 bg-[#1a5dc7] px-4 py-3 space-y-3 shadow-lg">
+            {user ? (
+              <div className="pb-2 border-b border-blue-400/30 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold text-white">{user.name}</p>
+                  <p className="text-[10px] text-blue-200">{user.email}</p>
+                </div>
+                <span className="rounded bg-amber-400 text-slate-900 px-2 py-0.5 text-[10px] font-bold">
+                  {user.role}
+                </span>
+              </div>
+            ) : (
+              <div className="pb-2 border-b border-blue-400/30">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block w-full text-center bg-white text-[#2874f0] font-bold py-2 rounded text-xs shadow"
+                >
+                  Sign In / Register
+                </Link>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <Link
+                href="/shops"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center space-x-2 rounded bg-white/10 p-2 text-white hover:bg-white/20"
+              >
+                <Store className="h-4 w-4 text-amber-300" />
+                <span>Explore Shops</span>
+              </Link>
+              <Link
+                href="/traveller"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center space-x-2 rounded bg-white/10 p-2 text-white hover:bg-white/20"
+              >
+                <Car className="h-4 w-4 text-amber-300" />
+                <span>Commute & Earn</span>
+              </Link>
+              <Link
+                href="/help"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center space-x-2 rounded bg-white/10 p-2 text-white hover:bg-white/20"
+              >
+                <Compass className="h-4 w-4 text-blue-200" />
+                <span>24x7 Help Center</span>
+              </Link>
+              <Link
+                href={getDashboardHref()}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center space-x-2 rounded bg-white/10 p-2 text-white hover:bg-white/20"
+              >
+                <Shield className="h-4 w-4 text-blue-200" />
+                <span>Dashboard</span>
+              </Link>
+            </div>
+
+            {user && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  logout();
+                }}
+                className="flex w-full items-center justify-center space-x-1.5 text-xs text-rose-200 hover:text-white pt-2 border-t border-blue-400/30"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                <span>Sign Out</span>
+              </button>
+            )}
           </div>
         )}
       </header>
 
-      {/* Location Picker Modal */}
+      {/* Geolocation / Address Modal */}
       {showLocationModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between border-b border-slate-100 p-4">
-              <h3 className="font-bold text-slate-900">Change Delivery & Shopping Area</h3>
-              <button
-                onClick={() => setShowLocationModal(false)}
-                className="rounded-lg p-1 text-slate-400 hover:text-slate-600"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="p-4">
-              <LocationPicker
-                initialLocation={currentLocation}
-                onConfirm={(newLoc) => {
-                  setCurrentLocation(newLoc);
-                  setShowLocationModal(false);
-                }}
-                title="Pinpoint your current location"
-                confirmButtonText="Save & Set Active Location"
-              />
-            </div>
-          </div>
-        </div>
+        <LocationPicker
+          initialLocation={currentLocation}
+          title="Select Delivery Address"
+          onConfirm={(loc) => {
+            setCurrentLocation(loc);
+            setShowLocationModal(false);
+          }}
+          onClose={() => setShowLocationModal(false)}
+        />
       )}
     </>
   );
