@@ -78,19 +78,19 @@ export function MobileBottomNav() {
               key={item.label}
               href={item.href}
               className={`flex flex-col items-center justify-center flex-1 py-1 relative transition-colors ${
-                active ? 'text-[#2874f0] font-semibold' : 'text-slate-500 hover:text-slate-800'
+                active ? 'text-[#0f766e] font-bold' : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               <div className="relative">
                 {item.highlight ? (
-                  <div className={`p-1 rounded-full ${active ? 'bg-amber-100 text-[#ff9f00]' : 'text-[#ff9f00]'}`}>
+                  <div className={`p-1 rounded-full ${active ? 'bg-teal-100 text-[#0f766e]' : 'text-[#ea580c]'}`}>
                     <Icon className="h-5 w-5" />
                   </div>
                 ) : (
                   <Icon className="h-5 w-5" />
                 )}
                 {Boolean(item.badge && item.badge > 0) && (
-                  <span className="absolute -top-1.5 -right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#fb641b] px-1 text-[10px] font-bold text-white shadow-sm animate-pulse">
+                  <span className="absolute -top-1.5 -right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#e11d48] px-1 text-[10px] font-bold text-white shadow-sm animate-pulse">
                     {item.badge}
                   </span>
                 )}

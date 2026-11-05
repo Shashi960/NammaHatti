@@ -29,7 +29,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
-  themeColor: '#2874f0',
+  themeColor: '#0f766e',
 };
 
 export default function RootLayout({
@@ -43,9 +43,9 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="theme-color" content="#2874f0" />
+        <meta name="theme-color" content="#0f766e" />
       </head>
-      <body className="flex flex-col min-h-screen bg-[#f1f2f4]">
+      <body className="flex flex-col min-h-screen bg-[#f8fafc] text-[#0f172a]">
         <AuthProvider>
           <LocationProvider>
             <CartProvider>

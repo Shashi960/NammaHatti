@@ -104,15 +104,15 @@ export function LocationPicker({
     <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm w-full">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div className="flex items-center space-x-2">
-          <MapPin className="h-5 w-5 text-[#2874f0]" />
-          <h3 className="font-bold text-[#212121]">{title}</h3>
+          <MapPin className="h-5 w-5 text-[#0f766e]" />
+          <h3 className="font-bold text-slate-900">{title}</h3>
         </div>
         <div className="flex items-center space-x-2">
           <button
             type="button"
             onClick={handleUseCurrentLocation}
             disabled={isLocating}
-            className="inline-flex items-center space-x-1.5 rounded-sm border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-[#2874f0] hover:bg-blue-100 transition-colors disabled:opacity-50"
+            className="inline-flex items-center space-x-1.5 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-xs font-semibold text-[#0f766e] hover:bg-teal-100 transition-colors disabled:opacity-50"
           >
             {isLocating ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -125,7 +125,7 @@ export function LocationPicker({
             <button
               type="button"
               onClick={onClose}
-              className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+              className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100"
             >
               <X className="h-4 w-4" />
             </button>
@@ -146,7 +146,7 @@ export function LocationPicker({
       <div>
         <div className="mb-1 flex items-center justify-between text-xs text-slate-500">
           <span>Click anywhere on the map to reposition pin</span>
-          {isReverseGeocoding && <span className="text-brand-600 font-medium">Resolving address...</span>}
+          {isReverseGeocoding && <span className="text-[#0f766e] font-medium">Resolving address...</span>}
         </div>
         <GoogleMap
           center={{ lat: selectedLoc.latitude, lng: selectedLoc.longitude }}
@@ -157,7 +157,7 @@ export function LocationPicker({
       </div>
 
       {/* Address Confirmation Card */}
-      <div className="rounded-lg bg-slate-50 p-3 text-xs text-slate-700 border border-slate-200">
+      <div className="rounded-xl bg-slate-50 p-3.5 text-xs text-slate-700 border border-slate-200">
         <p className="font-semibold text-slate-900 mb-0.5">Selected Coordinates & Address:</p>
         <p className="text-slate-600 mb-2">{selectedLoc.formattedAddress}</p>
         <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-500">
@@ -175,7 +175,7 @@ export function LocationPicker({
             value={landmark}
             onChange={(e) => setLandmark(e.target.value)}
             placeholder="e.g. Near Water Tank, Flat 3B"
-            className="w-full rounded border border-slate-300 bg-white px-2.5 py-1.5 text-xs focus:border-brand-500 focus:outline-none"
+            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs focus:border-[#0f766e] focus:outline-none"
           />
         </div>
       </div>
@@ -183,7 +183,7 @@ export function LocationPicker({
       <button
         type="button"
         onClick={() => onConfirm({ ...selectedLoc, landmark })}
-        className="w-full flex items-center justify-center space-x-2 rounded-sm bg-[#fb641b] px-4 py-3 text-sm font-bold uppercase tracking-wider text-white shadow hover:bg-[#e85a15] transition-colors"
+        className="w-full flex items-center justify-center space-x-2 rounded-full bg-[#0f766e] hover:bg-teal-800 px-4 py-3 text-sm font-bold tracking-wider text-white shadow-md transition-colors"
       >
         <Check className="h-4 w-4" />
         <span>{confirmButtonText}</span>

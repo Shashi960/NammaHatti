@@ -104,9 +104,9 @@ function ProductSearchContent() {
         <div className="max-w-7xl mx-auto px-2 py-2 overflow-x-auto no-scrollbar flex items-center space-x-2">
           <button
             onClick={() => setCategory('all')}
-            className={`px-3 py-1 rounded-full text-xs font-bold shrink-0 transition-colors ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 transition-colors ${
               category === 'all'
-                ? 'bg-[#2874f0] text-white'
+                ? 'bg-[#0f766e] text-white shadow-sm'
                 : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
@@ -116,9 +116,9 @@ function ProductSearchContent() {
             <button
               key={c.slug}
               onClick={() => setCategory(c.slug)}
-              className={`px-3 py-1 rounded-full text-xs font-bold shrink-0 transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 transition-colors ${
                 category === c.slug
-                  ? 'bg-[#2874f0] text-white'
+                  ? 'bg-[#0f766e] text-white shadow-sm'
                   : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
@@ -130,14 +130,14 @@ function ProductSearchContent() {
 
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
         
-        {/* 2. Top Sort & View Toolbar (Flipkart Style) */}
-        <div className="bg-white rounded p-2.5 sm:p-3 mb-3 border border-slate-200/80 shadow-sm flex items-center justify-between gap-2 text-xs">
+        {/* 2. Top Sort & View Toolbar */}
+        <div className="bg-white rounded-xl p-2.5 sm:p-3 mb-3 border border-slate-200/80 shadow-sm flex items-center justify-between gap-2 text-xs">
           <div className="flex items-center space-x-2">
             <span className="text-slate-500 font-semibold hidden sm:inline">Sort:</span>
             <select
               value={sortBy}
               onChange={(e: any) => setSortBy(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded px-2.5 py-1 font-semibold text-slate-800 focus:outline-none focus:border-[#2874f0]"
+              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 font-semibold text-slate-800 focus:outline-none focus:border-[#0f766e]"
             >
               <option value="relevance">Relevance</option>
               <option value="price_asc">Price: Low to High</option>
@@ -147,7 +147,7 @@ function ProductSearchContent() {
             <select
               value={availability}
               onChange={(e) => setAvailability(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded px-2.5 py-1 font-semibold text-slate-800 focus:outline-none focus:border-[#2874f0]"
+              className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 font-semibold text-slate-800 focus:outline-none focus:border-[#0f766e]"
             >
               <option value="all">All Availability</option>
               <option value="IN_STOCK">In Stock Only</option>
@@ -158,17 +158,18 @@ function ProductSearchContent() {
             <span className="text-slate-500 font-medium">
               <strong className="text-slate-900">{products.length}</strong> items
             </span>
-            <div className="flex border border-slate-200 rounded overflow-hidden">
+
+            <div className="flex border border-slate-200 rounded-lg overflow-hidden">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 ${viewMode === 'grid' ? 'bg-[#2874f0] text-white' : 'bg-white text-slate-600'}`}
+                className={`p-1.5 ${viewMode === 'grid' ? 'bg-[#0f766e] text-white' : 'bg-white text-slate-600'}`}
                 title="Grid View"
               >
                 <LayoutGrid className="h-3.5 w-3.5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-1.5 ${viewMode === 'list' ? 'bg-[#2874f0] text-white' : 'bg-white text-slate-600'}`}
+                className={`p-1.5 ${viewMode === 'list' ? 'bg-[#0f766e] text-white' : 'bg-white text-slate-600'}`}
                 title="List View"
               >
                 <List className="h-3.5 w-3.5" />
@@ -217,7 +218,7 @@ function ProductSearchContent() {
                         <p className="text-[10px] text-slate-400 uppercase font-semibold truncate">
                           {prod.shopName}
                         </p>
-                        <h3 className="font-semibold text-xs sm:text-sm text-[#212121] line-clamp-1 hover:text-[#2874f0]">
+                        <h3 className="font-semibold text-xs sm:text-sm text-[#212121] line-clamp-1 hover:text-[#0f766e]">
                           {prod.name}
                         </h3>
                         <div className="flex items-center space-x-1.5 mt-1">
@@ -228,11 +229,11 @@ function ProductSearchContent() {
                           <span className="text-[10px] text-slate-400">(38)</span>
                         </div>
                         <div className="mt-1 flex items-baseline space-x-1.5">
-                          <span className="text-sm sm:text-base font-bold text-[#212121]">₹{prod.price}</span>
+                          <span className="text-sm sm:text-base font-bold text-slate-900">₹{prod.price}</span>
                           <span className="text-xs text-slate-400 line-through">₹{originalPrice}</span>
                         </div>
-                        <div className="text-[10px] text-[#2874f0] font-medium flex items-center space-x-1 mt-0.5">
-                          <Zap className="h-2.5 w-2.5 fill-[#2874f0]" />
+                        <div className="text-[10px] text-[#0f766e] font-medium flex items-center space-x-1 mt-0.5">
+                          <Zap className="h-2.5 w-2.5 fill-[#0f766e]" />
                           <span>Route Pooled Delivery</span>
                         </div>
                       </div>
@@ -241,9 +242,10 @@ function ProductSearchContent() {
                     <div className="shrink-0 pl-2">
                       <button
                         onClick={(e) => handleAddToCart(prod, e)}
-                        className="bg-[#ff9f00] hover:bg-amber-400 text-slate-900 font-bold text-xs px-3 py-2 rounded-sm shadow-sm transition-colors active:scale-95"
+                        className="bg-[#0f766e] hover:bg-teal-800 text-white font-bold text-xs px-4 py-2 rounded-full shadow-sm transition-all active:scale-95 flex items-center space-x-1"
                       >
-                        {addedItem === prod._id ? '✓ Added' : 'Add to Cart'}
+                        <ShoppingBag className="h-3.5 w-3.5" />
+                        <span>{addedItem === prod._id ? '✓ In Cart' : 'Add to Cart'}</span>
                       </button>
                     </div>
                   </div>
@@ -254,17 +256,17 @@ function ProductSearchContent() {
               return (
                 <div
                   key={prod._id}
-                  className="bg-white rounded border border-slate-200/80 p-2.5 sm:p-3 hover:shadow-md transition-shadow flex flex-col justify-between group"
+                  className="bg-white rounded-2xl border border-slate-200/80 p-2.5 sm:p-3 hover:shadow-md transition-shadow flex flex-col justify-between group"
                 >
                   <Link href={`/products/${prod._id}`} className="block">
                     {/* Image Box */}
-                    <div className="h-36 sm:h-44 w-full bg-slate-50 rounded flex items-center justify-center p-2 relative overflow-hidden mb-2">
+                    <div className="h-36 sm:h-44 w-full bg-slate-50 rounded-xl flex items-center justify-center p-2 relative overflow-hidden mb-2">
                       <img
                         src={prod.images?.[0] || '/placeholder-product.svg'}
                         alt={prod.name}
                         className="h-full w-full object-contain group-hover:scale-105 transition-transform"
                       />
-                      <span className="absolute top-1 left-1 bg-[#388e3c] text-white text-[9px] font-bold px-1 py-0.5 rounded">
+                      <span className="absolute top-1.5 left-1.5 bg-[#059669] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
                         {discountPercent}% off
                       </span>
                     </div>
@@ -275,13 +277,13 @@ function ProductSearchContent() {
                     </p>
 
                     {/* Product Title */}
-                    <h3 className="font-semibold text-xs sm:text-sm text-[#212121] line-clamp-1 group-hover:text-[#2874f0] mt-0.5">
+                    <h3 className="font-semibold text-xs sm:text-sm text-slate-900 line-clamp-1 group-hover:text-[#0f766e] mt-0.5">
                       {prod.name}
                     </h3>
 
                     {/* Star Rating Badge */}
                     <div className="flex items-center space-x-1.5 mt-1">
-                      <span className="inline-flex items-center space-x-0.5 bg-[#388e3c] text-white text-[10px] font-bold px-1.5 py-0.2 rounded">
+                      <span className="inline-flex items-center space-x-0.5 bg-[#059669] text-white text-[10px] font-bold px-1.5 py-0.2 rounded">
                         <span>4.2</span>
                         <Star className="h-2 w-2 fill-white" />
                       </span>
@@ -290,23 +292,24 @@ function ProductSearchContent() {
 
                     {/* Price */}
                     <div className="mt-1 flex items-baseline space-x-1.5">
-                      <span className="text-sm sm:text-base font-bold text-[#212121]">₹{prod.price}</span>
+                      <span className="text-sm sm:text-base font-bold text-slate-900">₹{prod.price}</span>
                       <span className="text-[11px] text-slate-400 line-through">₹{originalPrice}</span>
                     </div>
 
                     {/* Route Tag */}
-                    <div className="text-[10px] text-[#2874f0] font-medium flex items-center space-x-1 mt-0.5">
-                      <Zap className="h-2.5 w-2.5 fill-[#2874f0]" />
+                    <div className="text-[10px] text-[#0f766e] font-medium flex items-center space-x-1 mt-0.5">
+                      <Zap className="h-2.5 w-2.5 fill-[#0f766e]" />
                       <span>Route Delivery</span>
                     </div>
                   </Link>
 
-                  {/* Add to Cart Button */}
+                  {/* Add to Cart Button (Rounded Pill) */}
                   <button
                     onClick={(e) => handleAddToCart(prod, e)}
-                    className="mt-2 w-full bg-[#ff9f00] hover:bg-amber-400 text-slate-900 font-bold text-xs py-1.5 rounded-sm transition-colors shadow-sm active:scale-95"
+                    className="mt-2.5 w-full bg-[#0f766e] hover:bg-teal-800 text-white font-bold text-xs py-2 rounded-full transition-all shadow-sm active:scale-95 flex items-center justify-center space-x-1"
                   >
-                    {addedItem === prod._id ? '✓ Added' : 'Add to Cart'}
+                    <ShoppingBag className="h-3.5 w-3.5" />
+                    <span>{addedItem === prod._id ? '✓ In Cart' : 'Add to Cart'}</span>
                   </button>
                 </div>
               );

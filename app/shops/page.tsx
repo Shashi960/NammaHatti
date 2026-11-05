@@ -191,7 +191,7 @@ export default function ShopsDiscoveryPage() {
                   <div className="flex sm:flex-col items-center justify-between sm:justify-center gap-2 border-t sm:border-t-0 sm:border-l border-slate-100 pt-3 sm:pt-0 sm:pl-4">
                     <Link
                       href={`/shops/${shop._id}`}
-                      className="rounded-sm bg-[#2874f0] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition-colors whitespace-nowrap text-center w-full"
+                      className="rounded-full bg-[#0f766e] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-teal-800 transition-colors whitespace-nowrap text-center w-full"
                     >
                       View Shop & Products
                     </Link>

@@ -62,7 +62,7 @@ export function RouteMap({ origin, destination, pickupStops = [], height = '360p
         center={{ lat: centerLat, lng: centerLng }}
         zoom={12}
         markers={markers}
-        polyline={{ points: polylinePoints, color: '#2874f0' }}
+        polyline={{ points: polylinePoints, color: '#0f766e' }}
         height={height}
       />
     </div>

@@ -259,7 +259,7 @@ export default function ShopDetailPage({ params }: { params: { id: string } }) {
                   type="button"
                   onClick={() => handleAddToCart(prod)}
                   disabled={prod.availability === 'OUT_OF_STOCK'}
-                  className={`flex items-center space-x-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold shadow-sm transition-all ${
+                  className={`flex items-center space-x-1.5 rounded-full px-3 py-1.5 text-xs font-semibold shadow-sm transition-all ${
                     addedItem === prod._id
                       ? 'bg-emerald-600 text-white'
                       : prod.availability === 'OUT_OF_STOCK'

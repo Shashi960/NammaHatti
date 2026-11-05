@@ -62,7 +62,7 @@ export function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-[#2874f0] text-white shadow-md">
+      <header className="sticky top-0 z-40 bg-[#0f766e] text-white shadow-md">
         {/* Main Header Container */}
         <div className="mx-auto max-w-7xl px-3 py-2.5 sm:px-6">
           <div className="flex items-center justify-between gap-2 sm:gap-4">
@@ -75,15 +75,15 @@ export function Navbar() {
                     {brandName}
                   </span>
                 </div>
-                <div className="flex items-center space-x-0.5 text-[10px] text-amber-300 italic font-semibold tracking-wider">
-                  <span>Explore</span>
-                  <span className="text-white font-bold">Local</span>
-                  <Sparkles className="h-2.5 w-2.5 text-amber-300 inline fill-amber-300" />
+                <div className="flex items-center space-x-0.5 text-[10px] text-teal-200 font-semibold tracking-wider">
+                  <span>Local</span>
+                  <span className="text-white font-bold">RouteMesh</span>
+                  <Sparkles className="h-2.5 w-2.5 text-emerald-300 inline fill-emerald-300" />
                 </div>
               </Link>
             </div>
 
-            {/* 2. Desktop Search Bar (Flipkart Style) */}
+            {/* 2. Desktop Search Bar (Rounded Pill Style) */}
             <div className="hidden md:flex flex-1 max-w-2xl mx-2">
               <form onSubmit={handleSearchSubmit} className="relative w-full">
                 <input
@@ -91,12 +91,12 @@ export function Navbar() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search for local shops, fresh bakery, electronics, grocery..."
-                  className="w-full rounded-sm bg-white py-2 pl-4 pr-11 text-sm text-[#212121] placeholder-slate-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-300"
+                  className="w-full rounded-full bg-white py-2.5 pl-5 pr-11 text-sm text-[#0f172a] placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-300 border border-teal-600/30"
                 />
                 <button
                   type="submit"
                   aria-label="Search"
-                  className="absolute right-0 top-0 bottom-0 px-3.5 flex items-center justify-center text-[#2874f0] hover:text-blue-700"
+                  className="absolute right-1 top-1 bottom-1 px-3.5 flex items-center justify-center rounded-full text-[#0f766e] hover:bg-teal-50"
                 >
                   <Search className="h-4 w-4" />
                 </button>
@@ -106,12 +106,12 @@ export function Navbar() {
             {/* 3. Location Selector Pill */}
             <button
               onClick={() => setShowLocationModal(true)}
-              className="hidden lg:flex items-center space-x-1.5 rounded-sm bg-white/10 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20 transition-colors border border-white/20"
+              className="hidden lg:flex items-center space-x-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-medium text-white hover:bg-white/20 transition-colors border border-white/20"
               title="Change Delivery Location"
             >
-              <MapPin className="h-3.5 w-3.5 text-amber-300 shrink-0" />
+              <MapPin className="h-3.5 w-3.5 text-teal-200 shrink-0" />
               <div className="text-left leading-tight max-w-[150px] truncate">
-                <span className="block text-[10px] text-blue-100 uppercase tracking-wider font-semibold">Deliver to</span>
+                <span className="block text-[10px] text-teal-200 uppercase tracking-wider font-semibold">Deliver to</span>
                 <span className="truncate block font-bold">
                   {currentLocation.city || 'Select Area'} {currentLocation.postalCode ? `(${currentLocation.postalCode})` : ''}
                 </span>
@@ -125,9 +125,9 @@ export function Navbar() {
               {/* Route Commute Portal */}
               <Link
                 href="/traveller"
-                className="flex items-center space-x-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-sm bg-[#ff9f00] text-slate-900 hover:bg-amber-400 transition-colors shadow-sm"
+                className="flex items-center space-x-1.5 text-xs font-bold px-3.5 py-2 rounded-full bg-[#ea580c] text-white hover:bg-orange-700 transition-colors shadow-sm"
               >
-                <Car className="h-3.5 w-3.5 text-slate-900" />
+                <Car className="h-3.5 w-3.5 text-white" />
                 <span>Earn on Commute</span>
               </Link>
 
@@ -145,19 +145,19 @@ export function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                    className="flex items-center space-x-1.5 bg-white text-[#2874f0] px-3.5 py-1.5 rounded-sm text-xs font-bold shadow-sm hover:bg-slate-50 transition-colors"
+                    className="flex items-center space-x-1.5 bg-white text-[#0f766e] px-4 py-2 rounded-full text-xs font-bold shadow-sm hover:bg-teal-50 transition-colors"
                   >
                     <User className="h-3.5 w-3.5" />
                     <span className="max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
-                    <ChevronDown className="h-3 w-3 text-[#2874f0]" />
+                    <ChevronDown className="h-3 w-3 text-[#0f766e]" />
                   </button>
 
                   {userDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-52 rounded-md bg-white py-1 shadow-xl ring-1 ring-black/5 z-50 text-slate-800">
+                    <div className="absolute right-0 mt-2 w-52 rounded-xl bg-white py-1 shadow-xl ring-1 ring-black/5 z-50 text-slate-800">
                       <div className="border-b border-slate-100 px-4 py-2.5 bg-slate-50">
                         <p className="text-xs font-bold text-slate-900">{user.name}</p>
                         <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
-                        <span className="mt-1 inline-block rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-bold text-[#2874f0]">
+                        <span className="mt-1 inline-block rounded bg-teal-50 px-2 py-0.5 text-[10px] font-bold text-[#0f766e]">
                           {user.role}
                         </span>
                       </div>
@@ -167,7 +167,7 @@ export function Navbar() {
                         onClick={() => setUserDropdownOpen(false)}
                         className="flex items-center space-x-2 px-4 py-2 text-xs hover:bg-slate-50 text-slate-700"
                       >
-                        <Shield className="h-3.5 w-3.5 text-[#2874f0]" />
+                        <Shield className="h-3.5 w-3.5 text-[#0f766e]" />
                         <span>My Dashboard</span>
                       </Link>
 
@@ -176,7 +176,7 @@ export function Navbar() {
                         onClick={() => setUserDropdownOpen(false)}
                         className="flex items-center space-x-2 px-4 py-2 text-xs hover:bg-slate-50 text-slate-700"
                       >
-                        <ShoppingBag className="h-3.5 w-3.5 text-[#388e3c]" />
+                        <ShoppingBag className="h-3.5 w-3.5 text-teal-600" />
                         <span>Orders & Deliveries</span>
                       </Link>
 
@@ -196,7 +196,7 @@ export function Navbar() {
               ) : (
                 <Link
                   href="/login"
-                  className="bg-white text-[#2874f0] px-5 py-1.5 rounded-sm text-xs font-bold shadow-sm hover:bg-slate-50 transition-colors"
+                  className="bg-white text-[#0f766e] px-5 py-2 rounded-full text-xs font-bold shadow-sm hover:bg-teal-50 transition-colors"
                 >
                   Login
                 </Link>
@@ -205,12 +205,12 @@ export function Navbar() {
               {/* Cart */}
               <Link
                 href="/cart"
-                className="relative flex items-center space-x-1.5 text-xs font-bold text-white hover:text-amber-200 transition-colors py-1.5"
+                className="relative flex items-center space-x-1.5 text-xs font-bold text-white hover:text-teal-200 transition-colors py-1.5"
               >
                 <div className="relative">
                   <ShoppingBag className="h-4 w-4" />
                   {totalItems > 0 && (
-                    <span className="absolute -top-2 -right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#fb641b] px-1 text-[10px] font-bold text-white shadow-sm">
+                    <span className="absolute -top-2 -right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#e11d48] px-1 text-[10px] font-bold text-white shadow-sm">
                       {totalItems}
                     </span>
                   )}
@@ -223,7 +223,7 @@ export function Navbar() {
             <div className="flex items-center space-x-2 md:hidden">
               <button
                 onClick={() => setShowLocationModal(true)}
-                className="p-1 text-white hover:text-amber-200"
+                className="p-1 text-white hover:text-teal-200"
                 title="Change Location"
               >
                 <MapPin className="h-5 w-5" />
@@ -232,7 +232,7 @@ export function Navbar() {
               <Link href="/cart" className="relative p-1 text-white" aria-label="Cart">
                 <ShoppingBag className="h-5 w-5" />
                 {totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#fb641b] px-1 text-[10px] font-bold text-white shadow-sm animate-pulse">
+                  <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#e11d48] px-1 text-[10px] font-bold text-white shadow-sm animate-pulse">
                     {totalItems}
                   </span>
                 )}
@@ -240,7 +240,7 @@ export function Navbar() {
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-1 text-white hover:text-amber-200"
+                className="p-1 text-white hover:text-teal-200"
                 aria-label="Toggle Menu"
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -248,7 +248,7 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Mobile Search Row (Always visible like Flipkart App) */}
+          {/* Mobile Search Row (Rounded Pill) */}
           <div className="mt-2.5 md:hidden">
             <form onSubmit={handleSearchSubmit} className="relative w-full">
               <input
@@ -256,12 +256,12 @@ export function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for local shops, grocery, tools..."
-                className="w-full rounded-md bg-white py-2 pl-3 pr-10 text-xs text-[#212121] placeholder-slate-400 shadow-inner focus:outline-none"
+                className="w-full rounded-full bg-white py-2 pl-4 pr-10 text-xs text-[#0f172a] placeholder-slate-400 shadow-inner focus:outline-none"
               />
               <button
                 type="submit"
                 aria-label="Submit Search"
-                className="absolute right-0 top-0 bottom-0 px-3 flex items-center justify-center text-[#2874f0]"
+                className="absolute right-0 top-0 bottom-0 px-3 flex items-center justify-center text-[#0f766e]"
               >
                 <Search className="h-4 w-4" />
               </button>
@@ -269,16 +269,16 @@ export function Navbar() {
           </div>
 
           {/* Mobile Current Location Sub-bar */}
-          <div className="mt-1.5 flex items-center justify-between text-[11px] text-blue-100 md:hidden border-t border-blue-400/40 pt-1">
+          <div className="mt-1.5 flex items-center justify-between text-[11px] text-teal-100 md:hidden border-t border-teal-700/40 pt-1">
             <div className="flex items-center space-x-1 truncate max-w-[280px]">
-              <MapPin className="h-3 w-3 text-amber-300 shrink-0" />
+              <MapPin className="h-3 w-3 text-teal-200 shrink-0" />
               <span className="truncate">
                 Delivering to: <strong className="text-white">{currentLocation.city || 'Your Area'}</strong> {currentLocation.postalCode ? `(${currentLocation.postalCode})` : ''}
               </span>
             </div>
             <button
               onClick={() => setShowLocationModal(true)}
-              className="text-amber-300 font-bold shrink-0 ml-2 hover:underline"
+              className="text-teal-200 font-bold shrink-0 ml-2 hover:underline"
             >
               Change
             </button>
@@ -287,7 +287,7 @@ export function Navbar() {
 
         {/* Mobile Slide-Out Drawer Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-blue-400/40 bg-[#1a5dc7] px-4 py-3 space-y-3 shadow-lg">
+          <div className="md:hidden border-t border-teal-700/40 bg-[#115e59] px-4 py-3 space-y-3 shadow-lg">
             {user ? (
               <div className="pb-2 border-b border-blue-400/30 flex items-center justify-between">
                 <div>

@@ -4,8 +4,8 @@
   "description": "Discover local shops and get orders delivered via daily commuter route pooling.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#2874f0",
-  "theme_color": "#2874f0",
+  "background_color": "#0f766e",
+  "theme_color": "#0f766e",
   "orientation": "portrait-primary",
   "icons": [
     {

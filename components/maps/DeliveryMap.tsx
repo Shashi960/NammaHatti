@@ -44,7 +44,7 @@ export function DeliveryMap({ shopLocation, deliveryLocation, height = '320px' }
         center={{ lat: centerLat, lng: centerLng }}
         zoom={13}
         markers={markers}
-        polyline={{ points: polylinePoints, color: '#2874f0' }}
+        polyline={{ points: polylinePoints, color: '#0f766e' }}
         height={height}
       />
     </div>

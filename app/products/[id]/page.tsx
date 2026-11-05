@@ -178,12 +178,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               </div>
             )}
 
-            {/* Desktop Action Buttons (Side by Side) */}
+            {/* Desktop Action Buttons (Side by Side Rounded Pills) */}
             <div className="hidden md:grid grid-cols-2 gap-3 w-full mt-6">
               <button
                 onClick={handleAddToCart}
                 disabled={product.availability === 'OUT_OF_STOCK'}
-                className="bg-[#ff9f00] hover:bg-amber-400 text-slate-900 font-bold py-3.5 px-4 rounded shadow transition-all active:scale-95 flex items-center justify-center space-x-2 disabled:opacity-50"
+                className="bg-[#0f766e] hover:bg-teal-800 text-white font-bold py-3.5 px-5 rounded-full shadow-md transition-all active:scale-95 flex items-center justify-center space-x-2 disabled:opacity-50"
               >
                 <ShoppingBag className="h-4 w-4" />
                 <span>{added ? '✓ IN CART' : 'ADD TO CART'}</span>
@@ -192,7 +192,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               <button
                 onClick={handleBuyNow}
                 disabled={product.availability === 'OUT_OF_STOCK'}
-                className="bg-[#fb641b] hover:bg-orange-600 text-white font-bold py-3.5 px-4 rounded shadow transition-all active:scale-95 flex items-center justify-center space-x-2 disabled:opacity-50"
+                className="bg-[#e11d48] hover:bg-rose-700 text-white font-bold py-3.5 px-5 rounded-full shadow-md transition-all active:scale-95 flex items-center justify-center space-x-2 disabled:opacity-50"
               >
                 <Zap className="h-4 w-4 fill-white" />
                 <span>BUY NOW</span>
@@ -207,40 +207,40 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             <div>
               <Link
                 href={`/shops/${product.shopId}`}
-                className="text-xs font-bold text-[#2874f0] hover:underline uppercase tracking-wider flex items-center space-x-1"
+                className="text-xs font-bold text-[#0f766e] hover:underline uppercase tracking-wider flex items-center space-x-1"
               >
                 <Store className="h-3.5 w-3.5" />
                 <span>Sold by {product.shop?.businessName || 'Local Shop'}</span>
               </Link>
-              <h1 className="text-lg sm:text-2xl font-bold text-[#212121] mt-1 leading-snug">
+              <h1 className="text-lg sm:text-2xl font-bold text-slate-900 mt-1 leading-snug">
                 {product.name}
               </h1>
             </div>
 
             {/* Rating & Review Badge */}
             <div className="flex items-center space-x-2">
-              <span className="inline-flex items-center space-x-1 bg-[#388e3c] text-white text-xs font-bold px-2 py-0.5 rounded">
+              <span className="inline-flex items-center space-x-1 bg-[#059669] text-white text-xs font-bold px-2 py-0.5 rounded">
                 <span>4.3</span>
                 <Star className="h-3 w-3 fill-white" />
               </span>
               <span className="text-xs font-semibold text-slate-500">128 Ratings & 24 Reviews</span>
               {product.shop?.verificationStatus === 'VERIFIED' && (
-                <span className="bg-blue-50 text-[#2874f0] border border-blue-200 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center space-x-1">
-                  <CheckCircle className="h-3 w-3 fill-[#2874f0] text-white" />
+                <span className="bg-teal-50 text-[#0f766e] border border-teal-200 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center space-x-1">
+                  <CheckCircle className="h-3 w-3 fill-[#0f766e] text-white" />
                   <span>Verified Merchant</span>
                 </span>
               )}
             </div>
 
-            {/* Flipkart Price Block */}
-            <div className="p-3 bg-slate-50 rounded border border-slate-100 flex items-baseline space-x-3">
-              <span className="text-2xl sm:text-3xl font-black text-[#212121]">
+            {/* Pricing Block */}
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-baseline space-x-3">
+              <span className="text-2xl sm:text-3xl font-black text-slate-900">
                 ₹{effectivePrice}
               </span>
               <span className="text-sm sm:text-base text-slate-400 line-through">
                 ₹{originalPrice}
               </span>
-              <span className="text-sm font-bold text-[#388e3c]">
+              <span className="text-sm font-bold text-[#059669]">
                 {discountPercent}% off
               </span>
             </div>
@@ -248,40 +248,40 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             {/* Quantity Stepper */}
             <div className="flex items-center space-x-3 pt-1">
               <span className="text-xs font-semibold text-slate-600">Quantity:</span>
-              <div className="flex items-center border border-slate-200 rounded overflow-hidden">
+              <div className="flex items-center border border-slate-200 rounded-full overflow-hidden">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-2.5 py-1 text-slate-600 hover:bg-slate-100"
+                  className="px-3 py-1 text-slate-600 hover:bg-slate-100"
                 >
                   <Minus className="h-3.5 w-3.5" />
                 </button>
-                <span className="px-3 py-1 text-xs font-bold text-slate-900 border-x border-slate-200">
+                <span className="px-3.5 py-1 text-xs font-bold text-slate-900 border-x border-slate-200">
                   {quantity}
                 </span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="px-2.5 py-1 text-slate-600 hover:bg-slate-100"
+                  className="px-3 py-1 text-slate-600 hover:bg-slate-100"
                 >
                   <Plus className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>
 
-            {/* Route Pooling Perks Box (Flipkart Style Offers) */}
-            <div className="rounded border border-amber-200 bg-amber-50/50 p-3 space-y-2">
+            {/* Route Pooling Perks Box */}
+            <div className="rounded-xl border border-teal-200 bg-teal-50/60 p-3 space-y-2">
               <p className="text-xs font-bold text-slate-900 flex items-center space-x-1">
-                <Tag className="h-3.5 w-3.5 text-[#ff9f00]" />
+                <Tag className="h-3.5 w-3.5 text-[#0f766e]" />
                 <span>Special Route-Pool Benefits</span>
               </p>
               <div className="space-y-1.5 text-xs text-slate-700">
                 <div className="flex items-start space-x-2">
-                  <Zap className="h-3.5 w-3.5 text-[#2874f0] shrink-0 mt-0.5" />
+                  <Zap className="h-3.5 w-3.5 text-[#ea580c] shrink-0 mt-0.5" />
                   <span>
                     <strong>Route Pooled Delivery:</strong> Save up to 50% on transit fees when delivered by commuters heading your way.
                   </span>
                 </div>
                 <div className="flex items-start space-x-2">
-                  <ShieldCheck className="h-3.5 w-3.5 text-[#388e3c] shrink-0 mt-0.5" />
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#059669] shrink-0 mt-0.5" />
                   <span>
                     <strong>Confidential 6-Digit OTP:</strong> Package handoff is securely verified directly by you.
                   </span>
@@ -292,12 +292,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             {/* Delivery Location Check */}
             <div className="pt-2 border-t border-slate-100">
               <div className="flex items-center space-x-2 text-xs">
-                <Truck className="h-4 w-4 text-[#2874f0]" />
+                <Truck className="h-4 w-4 text-[#0f766e]" />
                 <span className="text-slate-600">
                   Deliver to: <strong className="text-slate-900">{currentLocation.city || 'Your Area'}</strong> {currentLocation.postalCode ? `(${currentLocation.postalCode})` : ''}
                 </span>
               </div>
-              <p className="text-[11px] text-[#388e3c] font-semibold mt-1">
+              <p className="text-[11px] text-[#059669] font-semibold mt-1">
                 ✓ Available for Standard Route Delivery
               </p>
             </div>
@@ -308,16 +308,16 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 Product Details
               </h3>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="p-2 bg-slate-50 rounded">
+                <div className="p-2.5 bg-slate-50 rounded-lg">
                   <span className="text-slate-400 block text-[10px]">CATEGORY</span>
                   <span className="font-semibold text-slate-800">{product.categoryName || 'General'}</span>
                 </div>
-                <div className="p-2 bg-slate-50 rounded">
+                <div className="p-2.5 bg-slate-50 rounded-lg">
                   <span className="text-slate-400 block text-[10px]">WEIGHT / UNIT</span>
                   <span className="font-semibold text-slate-800">{product.weightKg || 0.5} kg / {product.unit || 'piece'}</span>
                 </div>
                 {product.sku && (
-                  <div className="p-2 bg-slate-50 rounded col-span-2">
+                  <div className="p-2.5 bg-slate-50 rounded-lg col-span-2">
                     <span className="text-slate-400 block text-[10px]">MERCHANT SKU</span>
                     <span className="font-mono text-slate-800">{product.sku}</span>
                   </div>
@@ -338,14 +338,14 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             {/* Shop Merchant Card */}
             {product.shop && (
               <div className="pt-2 border-t border-slate-100">
-                <div className="bg-blue-50/60 border border-blue-100 rounded p-3 flex items-center justify-between">
+                <div className="bg-teal-50/60 border border-teal-100 rounded-xl p-3 flex items-center justify-between">
                   <div>
                     <h4 className="font-bold text-xs text-slate-900">{product.shop.businessName}</h4>
                     <p className="text-[11px] text-slate-500">{product.shop.address || product.shop.location?.formattedAddress}</p>
                   </div>
                   <Link
                     href={`/shops/${product.shop._id}`}
-                    className="bg-[#2874f0] text-white text-xs font-bold px-3 py-1.5 rounded shadow-sm hover:bg-blue-700"
+                    className="bg-[#0f766e] text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm hover:bg-teal-800 transition-colors"
                   >
                     View Store
                   </Link>
@@ -356,12 +356,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         </div>
       </div>
 
-      {/* Mobile Sticky Bottom Action Bar (Flipkart Style Dual Action) */}
-      <div className="md:hidden fixed bottom-[52px] left-0 right-0 z-40 bg-white border-t border-slate-200 grid grid-cols-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+      {/* Mobile Sticky Bottom Action Bar (Dual Rounded Pill Buttons) */}
+      <div className="md:hidden fixed bottom-[52px] left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 py-2 flex items-center gap-2 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
         <button
           onClick={handleAddToCart}
           disabled={product.availability === 'OUT_OF_STOCK'}
-          className="bg-[#ff9f00] hover:bg-amber-400 text-slate-900 font-bold py-3 text-xs flex items-center justify-center space-x-1 disabled:opacity-50"
+          className="flex-1 bg-[#0f766e] hover:bg-teal-800 text-white font-bold py-2.5 px-3 text-xs rounded-full flex items-center justify-center space-x-1.5 shadow-sm active:scale-95 disabled:opacity-50"
         >
           <ShoppingBag className="h-4 w-4" />
           <span>{added ? '✓ IN CART' : 'ADD TO CART'}</span>
@@ -370,7 +370,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         <button
           onClick={handleBuyNow}
           disabled={product.availability === 'OUT_OF_STOCK'}
-          className="bg-[#fb641b] hover:bg-orange-600 text-white font-bold py-3 text-xs flex items-center justify-center space-x-1 disabled:opacity-50"
+          className="flex-1 bg-[#e11d48] hover:bg-rose-700 text-white font-bold py-2.5 px-3 text-xs rounded-full flex items-center justify-center space-x-1.5 shadow-sm active:scale-95 disabled:opacity-50"
         >
           <Zap className="h-4 w-4 fill-white" />
           <span>BUY NOW</span>

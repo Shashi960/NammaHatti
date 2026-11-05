@@ -48,7 +48,7 @@ export function ShopMap({ shops, userLocation, onShopSelect, height = '450px' }:
             <p style="font-weight: 700; margin: 0 0 2px 0; color: #212121;">${s.businessName}</p>
             <p style="font-size: 11px; color: #878787; margin: 0 0 4px 0;">${s.category} · ★ ${s.rating.toFixed(1)}</p>
             <p style="font-size: 11px; color: #212121; margin: 0 0 4px 0;">${s.address}</p>
-            <a href="/shops/${s._id}" style="font-size: 11px; color: #2874f0; font-weight: bold; text-decoration: underline;">View Shop & Products →</a>
+            <a href="/shops/${s._id}" style="font-size: 11px; color: #0f766e; font-weight: bold; text-decoration: underline;">View Shop & Products →</a>
           </div>
         `,
         onClick: () => {

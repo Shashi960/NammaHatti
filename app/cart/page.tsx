@@ -94,7 +94,7 @@ export default function CartCheckoutPage() {
     return (
       <div className="min-h-[70vh] bg-[#f1f2f4] flex flex-col items-center justify-center p-4">
         <div className="bg-white rounded-md border border-slate-200 p-8 max-w-md w-full text-center shadow-sm">
-          <div className="h-20 w-20 bg-blue-50 text-[#2874f0] rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="h-20 w-20 bg-teal-50 text-[#0f766e] rounded-full flex items-center justify-center mx-auto mb-4">
             <ShoppingBag className="h-10 w-10" />
           </div>
           <h2 className="text-lg font-bold text-[#212121]">Your Cart is Empty!</h2>
@@ -103,7 +103,7 @@ export default function CartCheckoutPage() {
           </p>
           <Link
             href="/search"
-            className="w-full inline-block bg-[#2874f0] hover:bg-blue-700 text-white font-bold py-2.5 rounded-sm text-xs shadow-sm transition-colors"
+            className="w-full inline-block bg-[#0f766e] hover:bg-teal-700 text-white font-bold py-3 rounded-full text-xs shadow-sm transition-colors"
           >
             Shop Now
           </Link>
@@ -113,12 +113,12 @@ export default function CartCheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f1f2f4] pb-24 md:pb-12">
+    <div className="min-h-screen bg-[#f8fafc] pb-24 md:pb-12">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 sm:py-6">
         
         {/* Error Alert */}
         {error && (
-          <div className="mb-4 rounded bg-rose-50 border border-rose-200 p-3 text-xs text-rose-700">
+          <div className="mb-4 rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs text-rose-700">
             {error}
           </div>
         )}
@@ -128,10 +128,10 @@ export default function CartCheckoutPage() {
           {/* Left Column: Delivery Address & Cart Items (8 cols) */}
           <div className="lg:col-span-8 space-y-3">
             
-            {/* 1. Flipkart Delivery Address Header */}
-            <div className="bg-white rounded border border-slate-200/80 p-3 sm:p-4 shadow-sm flex items-center justify-between">
+            {/* 1. Delivery Address Header */}
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-4 shadow-sm flex items-center justify-between">
               <div className="flex items-center space-x-2 text-xs">
-                <MapPin className="h-4 w-4 text-[#2874f0] shrink-0" />
+                <MapPin className="h-4 w-4 text-[#0f766e] shrink-0" />
                 <div className="leading-tight">
                   <span className="text-slate-500 font-medium">Deliver to: </span>
                   <strong className="text-slate-900 font-bold">
@@ -144,7 +144,7 @@ export default function CartCheckoutPage() {
               </div>
               <button
                 onClick={() => setShowLocationModal(true)}
-                className="text-[#2874f0] border border-[#2874f0] px-3 py-1 rounded-sm text-xs font-bold hover:bg-blue-50 shrink-0"
+                className="text-[#0f766e] border border-[#0f766e] px-4 py-1.5 rounded-full text-xs font-bold hover:bg-teal-50 shrink-0 transition-colors"
               >
                 Change
               </button>
@@ -231,9 +231,9 @@ export default function CartCheckoutPage() {
             </div>
 
             {/* 3. Delivery Method Selection */}
-            <div className="bg-white rounded border border-slate-200/80 p-3 sm:p-4 shadow-sm space-y-3">
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-4 shadow-sm space-y-3">
               <h3 className="font-bold text-xs uppercase tracking-wider text-slate-600 flex items-center space-x-1.5">
-                <Zap className="h-3.5 w-3.5 text-[#2874f0]" />
+                <Zap className="h-3.5 w-3.5 text-[#0f766e]" />
                 <span>Select Delivery Preference</span>
               </h3>
 
@@ -241,9 +241,9 @@ export default function CartCheckoutPage() {
                 {/* Standard Route Pooled */}
                 <label
                   onClick={() => setDeliveryType('STANDARD')}
-                  className={`border rounded p-3 cursor-pointer transition-all flex flex-col justify-between ${
+                  className={`border rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between ${
                     deliveryType === 'STANDARD'
-                      ? 'border-[#2874f0] bg-blue-50/50 ring-1 ring-[#2874f0]'
+                      ? 'border-[#0f766e] bg-teal-50/50 ring-1 ring-[#0f766e]'
                       : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
@@ -259,12 +259,12 @@ export default function CartCheckoutPage() {
                       name="deliveryType"
                       checked={deliveryType === 'STANDARD'}
                       onChange={() => setDeliveryType('STANDARD')}
-                      className="text-[#2874f0] mt-0.5"
+                      className="text-[#0f766e] mt-0.5"
                     />
                   </div>
                   <div className="mt-2 pt-1 border-t border-slate-100 flex items-center justify-between font-bold">
-                    <span className="text-[#388e3c]">₹35 per shop</span>
-                    <span className="text-[10px] text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded">
+                    <span className="text-[#059669]">₹35 per shop</span>
+                    <span className="text-[10px] text-teal-700 bg-teal-100 px-2 py-0.5 rounded-full">
                       Low Carbon
                     </span>
                   </div>
@@ -273,9 +273,9 @@ export default function CartCheckoutPage() {
                 {/* Express Priority */}
                 <label
                   onClick={() => setDeliveryType('EXPRESS')}
-                  className={`border rounded p-3 cursor-pointer transition-all flex flex-col justify-between ${
+                  className={`border rounded-xl p-3 cursor-pointer transition-all flex flex-col justify-between ${
                     deliveryType === 'EXPRESS'
-                      ? 'border-[#2874f0] bg-blue-50/50 ring-1 ring-[#2874f0]'
+                      ? 'border-[#0f766e] bg-teal-50/50 ring-1 ring-[#0f766e]'
                       : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
@@ -291,12 +291,12 @@ export default function CartCheckoutPage() {
                       name="deliveryType"
                       checked={deliveryType === 'EXPRESS'}
                       onChange={() => setDeliveryType('EXPRESS')}
-                      className="text-[#2874f0] mt-0.5"
+                      className="text-[#0f766e] mt-0.5"
                     />
                   </div>
                   <div className="mt-2 pt-1 border-t border-slate-100 flex items-center justify-between font-bold">
                     <span className="text-slate-800">₹70 per shop</span>
-                    <span className="text-[10px] text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">
+                    <span className="text-[10px] text-orange-800 bg-orange-100 px-2 py-0.5 rounded-full">
                       Priority
                     </span>
                   </div>
@@ -305,23 +305,23 @@ export default function CartCheckoutPage() {
             </div>
 
             {/* 4. Payment Method Selection */}
-            <div className="bg-white rounded border border-slate-200/80 p-3 sm:p-4 shadow-sm space-y-3">
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-4 shadow-sm space-y-3">
               <h3 className="font-bold text-xs uppercase tracking-wider text-slate-600 flex items-center space-x-1.5">
-                <CreditCard className="h-3.5 w-3.5 text-[#2874f0]" />
+                <CreditCard className="h-3.5 w-3.5 text-[#0f766e]" />
                 <span>Payment Method</span>
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <label
                   onClick={() => setPaymentMethod('DEMO_ONLINE')}
-                  className={`border rounded p-3 cursor-pointer transition-all flex items-center justify-between ${
+                  className={`border rounded-xl p-3 cursor-pointer transition-all flex items-center justify-between ${
                     paymentMethod === 'DEMO_ONLINE'
-                      ? 'border-[#2874f0] bg-blue-50/50 ring-1 ring-[#2874f0]'
+                      ? 'border-[#0f766e] bg-teal-50/50 ring-1 ring-[#0f766e]'
                       : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
                   <div className="flex items-center space-x-2">
-                    <CreditCard className="h-4 w-4 text-[#2874f0]" />
+                    <CreditCard className="h-4 w-4 text-[#0f766e]" />
                     <div>
                       <strong className="block font-bold text-slate-900">Demo Online Payment</strong>
                       <span className="text-[10px] text-slate-500">UPI / Cards / NetBanking Simulation</span>
@@ -332,15 +332,15 @@ export default function CartCheckoutPage() {
                     name="paymentMethod"
                     checked={paymentMethod === 'DEMO_ONLINE'}
                     onChange={() => setPaymentMethod('DEMO_ONLINE')}
-                    className="text-[#2874f0]"
+                    className="text-[#0f766e]"
                   />
                 </label>
 
                 <label
                   onClick={() => setPaymentMethod('COD')}
-                  className={`border rounded p-3 cursor-pointer transition-all flex items-center justify-between ${
+                  className={`border rounded-xl p-3 cursor-pointer transition-all flex items-center justify-between ${
                     paymentMethod === 'COD'
-                      ? 'border-[#2874f0] bg-blue-50/50 ring-1 ring-[#2874f0]'
+                      ? 'border-[#0f766e] bg-teal-50/50 ring-1 ring-[#0f766e]'
                       : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
@@ -356,7 +356,7 @@ export default function CartCheckoutPage() {
                     name="paymentMethod"
                     checked={paymentMethod === 'COD'}
                     onChange={() => setPaymentMethod('COD')}
-                    className="text-[#2874f0]"
+                    className="text-[#0f766e]"
                   />
                 </label>
               </div>
@@ -406,11 +406,11 @@ export default function CartCheckoutPage() {
               </div>
 
               {/* Desktop Place Order Button */}
-              <div className="hidden md:block p-3 sm:p-4 border-t border-slate-100 bg-slate-50">
+              <div className="hidden md:block p-3.5 sm:p-5 border-t border-slate-100 bg-slate-50 rounded-b-2xl">
                 <button
                   onClick={handleCheckout}
                   disabled={placingOrder}
-                  className="w-full bg-[#fb641b] hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-sm shadow-md transition-all active:scale-95 flex items-center justify-center space-x-2 text-sm disabled:opacity-50"
+                  className="w-full bg-[#e11d48] hover:bg-rose-700 text-white font-bold py-3.5 px-6 rounded-full shadow-md transition-all active:scale-95 flex items-center justify-center space-x-2 text-sm disabled:opacity-50"
                 >
                   {placingOrder ? (
                     <>
@@ -424,8 +424,8 @@ export default function CartCheckoutPage() {
               </div>
 
               {/* Safe & Secure Guarantee Note */}
-              <div className="p-3 border-t border-slate-100 flex items-center space-x-2 text-[11px] text-slate-500 bg-slate-50/50">
-                <ShieldCheck className="h-4 w-4 text-[#388e3c] shrink-0" />
+              <div className="p-3 border-t border-slate-100 flex items-center space-x-2 text-[11px] text-slate-500 bg-slate-50/50 rounded-b-2xl">
+                <ShieldCheck className="h-4 w-4 text-[#059669] shrink-0" />
                 <span>Safe and Secure Payments. 100% Authentic Products.</span>
               </div>
             </div>
@@ -434,18 +434,18 @@ export default function CartCheckoutPage() {
         </div>
       </div>
 
-      {/* Mobile Sticky Bottom Place Order Bar (Flipkart Style) */}
-      <div className="md:hidden fixed bottom-[52px] left-0 right-0 z-40 bg-white border-t border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
+      {/* Mobile Sticky Bottom Place Order Bar */}
+      <div className="md:hidden fixed bottom-[52px] left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-2.5 flex items-center justify-between shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
         <div>
           <span className="text-[10px] text-slate-400 line-through">₹{totalOriginalPrice}</span>
           <p className="text-base font-black text-slate-900 leading-none">₹{grandTotal}</p>
-          <span className="text-[10px] text-[#2874f0] font-semibold">View price details</span>
+          <span className="text-[10px] text-[#0f766e] font-semibold">View price details</span>
         </div>
 
         <button
           onClick={handleCheckout}
           disabled={placingOrder}
-          className="bg-[#fb641b] hover:bg-orange-600 text-white font-bold py-2.5 px-6 rounded-sm text-xs shadow-md transition-all active:scale-95 flex items-center space-x-1.5 disabled:opacity-50"
+          className="bg-[#e11d48] hover:bg-rose-700 text-white font-bold py-2.5 px-6 rounded-full text-xs shadow-md transition-all active:scale-95 flex items-center space-x-1.5 disabled:opacity-50"
         >
           {placingOrder && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
           <span>{placingOrder ? 'Processing...' : 'PLACE ORDER'}</span>

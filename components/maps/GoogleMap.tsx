@@ -15,7 +15,7 @@ export interface MapMarker {
   longitude: number;
   title: string;
   label?: string;
-  color?: 'brand' | 'route' | 'red' | 'blue' | 'purple' | 'green';
+  color?: 'brand' | 'route' | 'red' | 'blue' | 'purple' | 'green' | 'teal';
   infoHtml?: string;
   onClick?: () => void;
 }
@@ -149,7 +149,7 @@ export function GoogleMap({
         polylineRef.current = new window.google.maps.Polyline({
           path: polyline.points,
           geodesic: true,
-          strokeColor: polyline.color || '#2874f0',
+          strokeColor: polyline.color || '#0f766e',
           strokeOpacity: 0.9,
           strokeWeight: 4,
           map: mapInstanceRef.current,
@@ -200,9 +200,9 @@ export function GoogleMap({
         {/* Top Control & Status Bar */}
         <div className="absolute top-2 left-2 right-2 z-10 flex items-center justify-between rounded-lg bg-white/95 px-3 py-1.5 text-xs shadow-sm backdrop-blur border border-slate-200">
           <div className="flex items-center space-x-1.5 text-slate-700">
-            <Navigation className="h-3.5 w-3.5 text-[#2874f0]" />
+            <Navigation className="h-3.5 w-3.5 text-[#0f766e]" />
             <span className="font-semibold text-[#212121]">Interactive Map</span>
-            <span className="rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-bold text-[#2874f0]">
+            <span className="rounded bg-teal-50 px-1.5 py-0.5 text-[10px] font-bold text-[#0f766e]">
               Active
             </span>
           </div>
@@ -306,7 +306,7 @@ export function GoogleMap({
                   })
                   .join(' ')}
                 fill="none"
-                stroke="#2874f0"
+                stroke="#0f766e"
                 strokeWidth="4"
                 strokeOpacity="0.25"
                 strokeLinecap="round"
@@ -321,7 +321,7 @@ export function GoogleMap({
                   })
                   .join(' ')}
                 fill="none"
-                stroke={polyline.color || '#2874f0'}
+                stroke={polyline.color || '#0f766e'}
                 strokeWidth="2.2"
                 strokeDasharray="3,1.5"
                 strokeLinecap="round"
@@ -335,8 +335,8 @@ export function GoogleMap({
             const p = project(center.lat, center.lng);
             return (
               <g transform={`translate(${p.x}, ${p.y})`}>
-                <circle r="4.5" className="fill-[#2874f0]/20 animate-ping" />
-                <circle r="2.5" className="fill-[#2874f0] stroke-white" strokeWidth="0.8" />
+                <circle r="4.5" className="fill-[#0f766e]/20 animate-ping" />
+                <circle r="2.5" className="fill-[#0f766e] stroke-white" strokeWidth="0.8" />
               </g>
             );
           })()}
@@ -346,11 +346,11 @@ export function GoogleMap({
             const pt = project(m.latitude, m.longitude);
             const isSelected = selectedMarker?.id === m.id;
 
-            let fillColor = '#2874f0'; // Default Flipkart blue
-            if (m.color === 'route') fillColor = '#ff9f00'; // Amber
-            if (m.color === 'red') fillColor = '#fb641b'; // Flipkart Orange/Red
-            if (m.color === 'green' || m.color === 'brand') fillColor = '#388e3c'; // Green
-            if (m.color === 'blue') fillColor = '#2874f0';
+            let fillColor = '#0f766e'; // Default Forest Teal
+            if (m.color === 'route') fillColor = '#ea580c'; // Transit Amber
+            if (m.color === 'red') fillColor = '#e11d48'; // Vibrant Coral
+            if (m.color === 'green' || m.color === 'brand') fillColor = '#059669'; // Emerald
+            if (m.color === 'blue' || m.color === 'teal') fillColor = '#0f766e';
 
             return (
               <g
